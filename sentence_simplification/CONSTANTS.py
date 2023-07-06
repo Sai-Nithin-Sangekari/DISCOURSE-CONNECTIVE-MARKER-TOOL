@@ -7,7 +7,7 @@ COMPLEX_CONNECTIVES = {"चूँकि" : "अतः",
                        "यद्यपि" : "फिर भी",
                        }
 
-INPUT_FILE = "/Users/fatema/Desktop/workspace/LanguageCommunicator/AutomaticUSRGenerator/sentence_simplification/sentence_input.txt"
-PARSER_INPUT = "/Users/fatema/Desktop/workspace/LanguageCommunicator/AutomaticUSRGenerator/sentence_simplification/p_parser_input.txt"
-PARSER_OUTPUT = "/Users/fatema/Desktop/workspace/LanguageCommunicator/AutomaticUSRGenerator/sentence_simplification/p_parser_output.txt"
-OUTPUT_FILE = "/Users/fatema/Desktop/workspace/LanguageCommunicator/AutomaticUSRGenerator/sentence_simplification/sentence_output.txt"
+INPUT_FILE = "sentence_input.txt"
+PARSER_INPUT = "p_parser_input.txt"
+PARSER_OUTPUT = "p_parser_output.txt"
+OUTPUT_FILE = "sentence_output.txt"
