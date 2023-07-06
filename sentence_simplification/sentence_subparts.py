@@ -118,6 +118,12 @@ def breakSimpleConnective(sentence):
     tokens = sentence.split()
     for i in range(len(tokens)):
         token = tokens[i]
+        # 'नहीं तो' is simple connective
+        if token == 'नहीं':
+            following_index = get_word_index(tokens, 'तो')
+            if following_index == i+1:
+                token = 'नहीं तो'
+
         # Check if the token is a connective
         if token in CONSTANTS.SIMPLE_CONNECTIVES:
             get_parser_output(sentence)
