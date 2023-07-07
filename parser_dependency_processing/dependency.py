@@ -107,7 +107,7 @@ def process_relation(output):
         "rs": "re",
         "jjmod": "intf",
         "jjmod__intf": "intf",
-        "nmod_k1inv": "rvks",
+        "nmod__k1inv": "rvks",
         "nmod__k2inv": "rbks",
         "nmod__adj+JJ": "mod",
         "mod+JJ": "mod",
@@ -328,6 +328,7 @@ def clean_input_file(input):
 def get_parser_output(input, output):
     data = clean_input_file(input)
     os.system("isc-parser -i " + input + " -o " + output)
+    #os.system("isc-tagger -i " + input + " -o " + output)
 
 def add_wx_conv_col(data):
     hindi_format = WXC(order="utf2wx", lang="hin")
