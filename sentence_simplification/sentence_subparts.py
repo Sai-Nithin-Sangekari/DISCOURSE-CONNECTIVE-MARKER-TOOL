@@ -57,18 +57,17 @@ def write_output(dictionary, file_path):
                     line = line + "(" + item + ":" + key + letter + ")" + " "
             line += '\n'
             file.write(line)
+    log("Output file written successfully")
 
 def is_prev_word_verb(parser_output, index):
     try:
         with open(parser_output, 'r') as file:
             lines = file.readlines()
             for i in range(len(lines)):
-                if i <= index:
+                if i == index:
                     lineContent = lines[i].strip().split()
-                    if len(lineContent) > 0 and lineContent[0] == str(index) and (lineContent[3] == 'VM' or lineContent[3] == 'VAUX'):
+                    if len(lineContent) > 0 and (lineContent[1] == 'VM' or lineContent[1] == 'VAUX'):
                         return True
-                else:
-                    break
 
     except FileNotFoundError:
         log('No such File found.', 'ERROR')
@@ -99,8 +98,7 @@ def breakPairConnective(sentence):
                 index_of_pair_value = get_word_index(tokens, pair_value)
                 if not (index_of_pair_value == -1):
                     get_parser_output(sentence)
-                    # since parser indexing is 1 based
-                    if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value):
+                    if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
                         tokens.pop(i)
                         index_of_pair_value = index_of_pair_value - 1
                         sent1 = tokens[:index_of_pair_value]
@@ -127,7 +125,7 @@ def breakSimpleConnective(sentence):
         # Check if the token is a connective
         if token in CONSTANTS.SIMPLE_CONNECTIVES:
             get_parser_output(sentence)
-            if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i):
+            if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
                 sent1 = tokens[:i]
                 sent2 = tokens[i:]
                 simpler_sentences.append(" ".join(sent1))
@@ -148,7 +146,7 @@ def get_parser_output(sentence):
     write_input_in_parser_input(parser_input_file, sentence)
     with open(CONSTANTS.PARSER_OUTPUT, 'w') as file:
         file.truncate()
-    os.system("isc-parser -i p_parser_input.txt -o p_parser_output.txt")
+    os.system("isc-tagger -i p_parser_input.txt -o p_parser_output.txt")
 
 def breakAllPairedConnective(sentence, allPairedConnectiveList):
     simpler_sentences = breakPairConnective(sentence)
