@@ -85,6 +85,7 @@ def get_word_index(words, value):
 def breakPairConnective(sentence):
     # This function return list of sentences if a paired connective is found else returns an empty list
     simpler_sentences = []
+    BREAK_SENTENCE = False
     # Tokenize the sentence by splitting it into words
     tokens = sentence.split()
     # Iterate through the tokens to find connectives and split the sentence
@@ -92,20 +93,24 @@ def breakPairConnective(sentence):
         token = tokens[i]
         # Check if the token is a paired-connective
         if token in CONSTANTS.COMPLEX_CONNECTIVES:
-            pair_value = CONSTANTS.COMPLEX_CONNECTIVES[token]
-            if pair_value in sentence:
-                pair_value = pair_value.strip().split()[0]
-                index_of_pair_value = get_word_index(tokens, pair_value)
-                if not (index_of_pair_value == -1):
-                    get_parser_output(sentence)
-                    if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
-                        tokens.pop(i)
-                        index_of_pair_value = index_of_pair_value - 1
-                        sent1 = tokens[:index_of_pair_value]
-                        sent2 = tokens[index_of_pair_value:]
-                        simpler_sentences.append(" ".join(sent1))
-                        simpler_sentences.append(" ".join(sent2))
-                        break
+            pair_value_lst = CONSTANTS.COMPLEX_CONNECTIVES[token]
+            for pair_value in pair_value_lst:
+                if pair_value in sentence:
+                    pair_value = pair_value.strip().split()[0]
+                    index_of_pair_value = get_word_index(tokens, pair_value)
+                    if not (index_of_pair_value == -1):
+                        get_parser_output(sentence)
+                        if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
+                            tokens.pop(i)
+                            index_of_pair_value = index_of_pair_value - 1
+                            sent1 = tokens[:index_of_pair_value]
+                            sent2 = tokens[index_of_pair_value:]
+                            simpler_sentences.append(" ".join(sent1))
+                            simpler_sentences.append(" ".join(sent2))
+                            BREAK_SENTENCE = True
+                            break
+            if BREAK_SENTENCE:
+                break
     return simpler_sentences
 
 

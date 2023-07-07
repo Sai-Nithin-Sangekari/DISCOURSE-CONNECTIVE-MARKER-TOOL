@@ -1,6 +1,14 @@
-1	नहीं	नहीं	NEG	NEG	_	2	lwg__neg	_	_
-2	तो	तो	CC	CC	_	0	main	_	_
-3	मैं	मैं	PRP	PRP	_	5	k1	_	_
-4	कल	कल	NN	NN	_	5	k7t	_	_
-5	लाऊंगी।	लाऊंगी।	VM	VM	_	2	ccof	_	_
+फिर	RB
+भी	RP
+बड़ी	JJ
+सुनामी	NN
+के	PSP
+संकेत	NN
+तीन	QC
+घंटे	NN
+पहले	NST
+मिल	VM
+सकते	VAUX
+हैं	VAUX
+।	SYM
 
