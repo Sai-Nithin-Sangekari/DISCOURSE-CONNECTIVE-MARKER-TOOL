@@ -109,10 +109,7 @@ def process_relation(output):
         "jjmod__intf": "intf",
         "nmod__k1inv": "rvks",
         "nmod__k2inv": "rbks",
-        "nmod__adj+JJ": "mod",
         "mod+JJ": "mod",
-        "nmod__adj +QC": "card",
-        "nmod__adj+DEM": "dem"
     }
 
     #to fetch necessary rule info in first iteration
@@ -191,7 +188,24 @@ def process_relation(output):
             index = row[0]
             term = row[1]
             POS_tag = row[3]
-            if dep_reln in dependency_mapper:
+
+            if dep_reln == 'nmod__adj':
+                if POS_tag == 'JJ':
+                    up_dep = 'mod'
+                    row[7] = up_dep
+                elif POS_tag == 'QC':
+                    up_dep = 'card'
+                    row[7] = up_dep
+                elif POS_tag == 'DEM':
+                    up_dep = 'dem'
+                    row[7] = up_dep
+                elif POS_tag == 'QF':
+                    up_dep = 'quant'
+                    row[7] = up_dep
+            elif dep_reln == 'mod' and POS_tag == 'JJ':
+                up_dep = 'mod'
+                row[7] = up_dep
+            elif dep_reln in dependency_mapper:
                 up_dep = dependency_mapper[dep_reln]
                 row[7] = up_dep
             elif dep_reln.startswith('k') and dep_reln.endswith('u'):
