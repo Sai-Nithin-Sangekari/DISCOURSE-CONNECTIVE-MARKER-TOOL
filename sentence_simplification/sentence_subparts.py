@@ -89,13 +89,14 @@ def write_output(dictionary, file_path):
     with open(file_path, 'w') as file:
         for key, value in dictionary.items():
             index = 'a'
-            line = f"{key}: "
+            line = f""
+            letter = ''
             for i in range(len(value)):
                 item = value[i]
-                letter = string.ascii_lowercase[i]
+                if len(value) > 1:
+                    letter = string.ascii_lowercase[i]
                 if len(item) > 0 :
-                    line = line + "(" + item + ":" + key + letter + ")" + " "
-            line += '\n'
+                    line = line + key + letter + "  " + item + "\n"
             file.write(line)
     log("Output file written successfully")
 
