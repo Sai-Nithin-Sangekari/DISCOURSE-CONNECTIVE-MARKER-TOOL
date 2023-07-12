@@ -381,11 +381,17 @@ def write_file(data, OUTPUT_FILE):
         log('Parser output file write successful')
 
 if __name__ == "__main__":
+    hindi_format = WXC(order="wx2utf", lang="hin")
     get_parser_output(CONSTANTS.INPUT_FILE, CONSTANTS.PARSER_OUTPUT_FILE)
     data = read_output_file(CONSTANTS.PARSER_OUTPUT_FILE)
     output = parse_file(data)
     final_output = []
     for inner_list in output:
-        inner_list = [str(ele) for ele in inner_list]
+        #inner_list = [str(ele) for ele in inner_list]
+        for i in range(len(inner_list)):
+            #convert every wx_conv to utf8
+            if i == 1:
+                inner_list[i] = hindi_format.convert(inner_list[i])
+            inner_list[i] = str(inner_list[i])
         final_output.append('\t'.join(inner_list))
     write_file(final_output, CONSTANTS.PROCESSED_PARSER_OUTPUT_FILE)
