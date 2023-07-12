@@ -1,9 +1,9 @@
 import string
-
 import CONSTANTS
 import sys
 import re
 import os
+from wxconv import WXC
 
 def log(mssg, logtype='OK'):
     '''Generates log message in predefined format.'''
@@ -36,14 +36,54 @@ def read_input(file_path):
         sys.exit()
     return input_data
 
+
+def clean(word, inplace=''):
+    """
+    Clean concept words by removing numbers and special characters from it using regex.
+    >>> clean("kara_1-yA_1")
+    'karayA'
+    >>> clean("kara_1")
+    'kara'
+    >>> clean("padZa_1")
+    'pada'
+    >>> clean("caDZa_1")
+    'caDa'
+
+    """
+    newWord = word
+    if 'dZ' in word:  # handling words with dZ/jZ -Kirti - 15/12
+        newWord = word.replace('dZ', 'd')
+    elif 'jZ' in word:
+        newWord = word.replace('jZ', 'j')
+    elif 'DZ' in word:
+        newWord = word.replace('DZ', 'D')
+
+    #clword = re.sub(r'[^a-zA-Z]+', inplace, newWord)
+    return newWord
+
 def validate_sentence(sentence):
-    #sentence not empty
+    #sentence not empty - return True
     #Regular expression pattern to match any non-digit character
     pattern = r'\D'
     if not len(sentence) or not re.search(pattern, sentence):
         return False
 
     return True
+
+def sanitize_input(sentence):
+
+    wx_format = WXC(order="utf2wx", lang="hin")
+    generate_wx_text = wx_format.convert(sentence)
+    clean_wx_text = ""
+    tokens = generate_wx_text.strip().split()
+    for word in tokens:
+        clean_wx_text = clean_wx_text + clean(word) + " "
+
+    clean_wx_text.strip()
+    hindi_format = WXC(order="wx2utf", lang="hin")
+    clean_hindi_text = hindi_format.convert(clean_wx_text)
+
+    return clean_hindi_text
 
 def write_output(dictionary, file_path):
     with open(file_path, 'w') as file:
@@ -145,7 +185,6 @@ def write_input_in_parser_input(file_path, sentence):
         file.write(sentence)
         file.close()
 
-
 def get_parser_output(sentence):
     parser_input_file = CONSTANTS.PARSER_INPUT
     write_input_in_parser_input(parser_input_file, sentence)
@@ -181,6 +220,7 @@ if __name__ == '__main__':
 
     for key, value in input_data.items():
         if validate_sentence(value):
+            value = sanitize_input(value)
             # First break the sentence by pair connectives
             allPairedConnectiveList = []
             breakAllPairedConnective(value, allPairedConnectiveList)
