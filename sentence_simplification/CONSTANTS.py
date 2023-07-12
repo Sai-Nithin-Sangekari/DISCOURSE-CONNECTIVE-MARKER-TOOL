@@ -12,4 +12,3 @@ INPUT_FILE = "sentence_input.txt"
 PARSER_INPUT = "p_parser_input.txt"
 PARSER_OUTPUT = "p_parser_output.txt"
 OUTPUT_FILE = "sentence_output.txt"
-cd
