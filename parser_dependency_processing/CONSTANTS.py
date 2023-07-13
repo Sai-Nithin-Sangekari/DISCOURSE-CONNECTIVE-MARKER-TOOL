@@ -1,3 +1,5 @@
 INPUT_FILE = "input.txt"
-PARSER_OUTPUT_FILE = "output.txt"
-PROCESSED_PARSER_OUTPUT_FILE = "parser_output.txt"
+INTERMEDIATE_PARSER_INPUT = "inter_parser_input.txt"
+INTERMEDIATE_PARSER_OUTPUT = "inter_parser_output.txt"
+CONSOLIDATED_PARSER_OUTPUT = "consolidated_parser_output.txt"
+PROCESSED_PARSER_OUTPUT_FILE = "output.txt"
