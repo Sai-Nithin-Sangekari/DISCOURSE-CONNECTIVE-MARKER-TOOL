@@ -10,11 +10,11 @@ def log(mssg, logtype='OK'):
 
     # Format for log message
     print(f'[{logtype}] : {mssg}')
-    #if logtype == 'ERROR':
+    if logtype == 'ERROR':
+        sys.exit()
 
 def read_input(file_path):
     '''Returns dict with key - sentence_id and value - sentence for data given in file'''
-
     log(f'File ~ {file_path}')
     try:
         with open(file_path, 'r') as file:
@@ -25,7 +25,6 @@ def read_input(file_path):
                 if lineContent == '':
                     break
                 else:
-                    # sentence_info = lineContent.split('\t')
                     sentence_info = lineContent.split(' ', 1)
                     key = sentence_info[0]
                     value = sentence_info[1].strip()
@@ -58,7 +57,6 @@ def clean(word, inplace=''):
     elif 'DZ' in word:
         newWord = word.replace('DZ', 'D')
 
-    #clword = re.sub(r'[^a-zA-Z]+', inplace, newWord)
     return newWord
 
 def validate_sentence(sentence):
@@ -88,7 +86,6 @@ def sanitize_input(sentence):
 def write_output(dictionary, file_path):
     with open(file_path, 'w') as file:
         for key, value in dictionary.items():
-            index = 'a'
             line = f""
             letter = ''
             for i in range(len(value)):

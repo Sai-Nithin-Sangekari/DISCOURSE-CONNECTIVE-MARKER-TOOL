@@ -13,7 +13,7 @@
 - "consolidated_parser_output.txt" - All the intermediate parser outputs are appended in this file
 
 ## Prerequisite - 
-- The isc tagger should be set up in the same project
+- The isc parser should be set up in the same project
 - Update the file paths in CONSTANTS.py as per your directory
 
 ## Steps of execution -
