@@ -1,6 +1,6 @@
 ## Assumptions -
 - Input file has unique sentence id for each input
-- Input file has - sentence_id - tab separated - sentence
+- Input file has - sentence_id - space separated - sentence
 - Input file can have many sentences
 - Input sentences are in hindi language
 
