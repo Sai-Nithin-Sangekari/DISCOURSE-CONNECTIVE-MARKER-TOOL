@@ -83,17 +83,21 @@ def sanitize_input(sentence):
 
     return clean_hindi_text
 
-def write_output(dictionary, file_path):
+def write_output(dictionary, file_path, manual_evaluation):
     with open(file_path, 'w') as file:
         for key, value in dictionary.items():
             line = f""
             letter = ''
             for i in range(len(value)):
                 item = value[i]
+                if item in manual_evaluation:
+                    TAG = 'Manual evaluation'
+                else:
+                    TAG = 'None'
                 if len(value) > 1:
                     letter = string.ascii_lowercase[i]
                 if len(item) > 0 :
-                    line = line + key + letter + "  " + item + "\n"
+                    line = line + key + letter + "  " + item + "  " + TAG + "\n"
             file.write(line)
     log("Output file written successfully")
 
@@ -120,7 +124,7 @@ def get_word_index(words, value):
             break
     return index
 
-def breakPairConnective(sentence):
+def breakPairConnective(sentence, manual_evaluation):
     # This function return list of sentences if a paired connective is found else returns an empty list
     simpler_sentences = []
     BREAK_SENTENCE = False
@@ -147,12 +151,14 @@ def breakPairConnective(sentence):
                             simpler_sentences.append(" ".join(sent2))
                             BREAK_SENTENCE = True
                             break
+                        else:
+                            manual_evaluation.append(sentence)
             if BREAK_SENTENCE:
                 break
     return simpler_sentences
 
 
-def breakSimpleConnective(sentence):
+def breakSimpleConnective(sentence, manual_evaluation):
     # This function return list of sentences if a simple connective is found else returns an empty list
     simpler_sentences = []
     # Tokenize the sentence by splitting it into words
@@ -174,6 +180,8 @@ def breakSimpleConnective(sentence):
                 simpler_sentences.append(" ".join(sent1))
                 simpler_sentences.append(" ".join(sent2))
                 break
+            elif i > 1:
+                manual_evaluation.append(sentence)
 
     return simpler_sentences
 
@@ -190,44 +198,44 @@ def get_parser_output(sentence):
         file.truncate()
     os.system("isc-tagger -i p_parser_input.txt -o p_parser_output.txt")
 
-def breakAllPairedConnective(sentence, allPairedConnectiveList):
-    simpler_sentences = breakPairConnective(sentence)
+def breakAllPairedConnective(sentence, allPairedConnectiveList, manual_evaluation):
+    simpler_sentences = breakPairConnective(sentence, manual_evaluation)
     if len(simpler_sentences) == 0:
         allPairedConnectiveList.append(sentence)
         return
 
     for s in simpler_sentences:
-        breakAllPairedConnective(s, allPairedConnectiveList)
+        breakAllPairedConnective(s, allPairedConnectiveList, manual_evaluation)
 
     return
 
-def breakAllSimpleConnective(sentence, allSimpleConnectiveList):
-    simpler_sentences = breakSimpleConnective(sentence)
+def breakAllSimpleConnective(sentence, allSimpleConnectiveList, manual_evaluation):
+    simpler_sentences = breakSimpleConnective(sentence, manual_evaluation)
     if len(simpler_sentences) == 0:
         allSimpleConnectiveList.append(sentence)
         return
 
     for s in simpler_sentences:
-        breakAllSimpleConnective(s, allSimpleConnectiveList)
+        breakAllSimpleConnective(s, allSimpleConnectiveList, manual_evaluation)
 
     return
 
 if __name__ == '__main__':
     input_data = read_input(CONSTANTS.INPUT_FILE)
     output_data = {}
-
+    manual_evaluation = []
     for key, value in input_data.items():
         if validate_sentence(value):
             value = sanitize_input(value)
             # First break the sentence by pair connectives
             allPairedConnectiveList = []
-            breakAllPairedConnective(value, allPairedConnectiveList)
+            breakAllPairedConnective(value, allPairedConnectiveList, manual_evaluation)
             allSimpleConnectiveList = []
             for s in allPairedConnectiveList:
-                breakAllSimpleConnective(s, allSimpleConnectiveList)
+                breakAllSimpleConnective(s, allSimpleConnectiveList, manual_evaluation)
         else:
-            allSimpleConnectiveList = ['Error']
+            allSimpleConnectiveList = ['Invalid input']
 
         output_data[key] = allSimpleConnectiveList
-    write_output(output_data, CONSTANTS.OUTPUT_FILE)
+    write_output(output_data, CONSTANTS.OUTPUT_FILE, manual_evaluation)
 
