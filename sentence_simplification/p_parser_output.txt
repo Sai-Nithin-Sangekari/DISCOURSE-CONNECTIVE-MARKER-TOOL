@@ -1,14 +1,13 @@
-अर्थात्	CC
-वह	PRP
-1	QC
-घंटे	NN
-में	PSP
-15°	QC
-एवं	CC
-4	QC
-मिनट	NN
-में	PSP
-1°	QC
-घूमती	VM
-है.	VAUX
+और	CC
+इतनी	QF
+गहराई	NN
+पर	PSP
+किस	WQ
+प्रकार	NN
+के	PSP
+पदार्थ	NN
+पाए	VM
+जाते	VAUX
+हैं	VAUX
+?	SYM
 

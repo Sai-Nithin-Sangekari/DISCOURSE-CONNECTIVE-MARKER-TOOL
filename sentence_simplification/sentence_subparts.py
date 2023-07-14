@@ -79,7 +79,10 @@ def sanitize_input(sentence):
 
     clean_wx_text.strip()
     hindi_format = WXC(order="wx2utf", lang="hin")
-    clean_hindi_text = hindi_format.convert(clean_wx_text)
+    clean_hindi_text = hindi_format.convert(clean_wx_text).strip()
+
+    if clean_hindi_text.endswith('.'):
+        clean_hindi_text = clean_hindi_text[:-1] + " " + "।"
 
     return clean_hindi_text
 
