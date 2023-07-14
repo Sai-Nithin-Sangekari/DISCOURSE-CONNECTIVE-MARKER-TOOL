@@ -1,14 +1,14 @@
-फिर	RB
-भी	RP
-बड़ी	JJ
-सुनामी	NN
-के	PSP
-संकेत	NN
-तीन	QC
+अर्थात्	CC
+वह	PRP
+1	QC
 घंटे	NN
-पहले	NST
-मिल	VM
-सकते	VAUX
-हैं	VAUX
-।	SYM
+में	PSP
+15°	QC
+एवं	CC
+4	QC
+मिनट	NN
+में	PSP
+1°	QC
+घूमती	VM
+है.	VAUX
 

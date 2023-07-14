@@ -109,7 +109,6 @@ def process_relation(output):
         "jjmod__intf": "intf",
         "nmod__k1inv": "rvks",
         "nmod__k2inv": "rbks",
-        "mod+JJ": "mod",
     }
 
     #to fetch necessary rule info in first iteration
@@ -204,6 +203,9 @@ def process_relation(output):
                     row[7] = up_dep
             elif dep_reln == 'mod' and POS_tag == 'JJ':
                 up_dep = 'mod'
+                row[7] = up_dep
+            elif dep_reln == 'lwg__neg' and POS_tag == 'NEG':
+                up_dep = 'neg'
                 row[7] = up_dep
             elif dep_reln in dependency_mapper:
                 up_dep = dependency_mapper[dep_reln]
@@ -307,25 +309,6 @@ def format_data(row):
     formatted_row = [index, wx_token, token, category, category_1, col6, related_to, relation, col9, col10]
     return formatted_row
 
-def read_input_file(file_name):
-    hindi_format = WXC(order="wx2utf", lang="hin")
-    try:
-        with open(file_name, 'r') as file:
-            lines = file.readlines()
-            file_rows = ''
-            for i in range(len(lines)):
-                lineContent = lines[i]
-                if lineContent.strip() == '':
-                    continue
-                else:
-                    file_rows = hindi_format.convert(lineContent)
-
-            log('File data read.')
-    except FileNotFoundError:
-        log('No such File found. ' + file_name, 'ERROR')
-        sys.exit()
-    return file_rows
-
 def generate_parse_data(parser_output_line):
     """
     >>> generate_parse_data("1	यदि	यदि	CC	CC	_	15	vmod	_	_")
@@ -335,14 +318,9 @@ def generate_parse_data(parser_output_line):
     return output
 
 def parse_file(parser_output):
-    '''
-    :param parser_output:
-    :return:
-    '''
     parsed_output = list(map(lambda x: generate_parse_data(x), parser_output))
     format_output = list(map(lambda x: format_data(x), parsed_output))
-    processed_relation = process_relation(format_output)
-    return processed_relation
+    return format_output
 
 def clean_input_data(input):
     clean_input = []
@@ -361,48 +339,8 @@ def clean_input_data(input):
 def get_parser_output(input, output):
     os.system("isc-parser -i " + input + " -o " + output)
 
-def add_wx_conv_col(data):
-    hindi_format = WXC(order="utf2wx", lang="hin")
-    i = len(data)
-    while i > 0:
-        i = i - 1
-        info = data[i].strip().split("\t")
-        wx_form = hindi_format.convert(info[1])
-        info[1] = wx_form
-        data[i] = '\t'.join(info)
-    return data
-
-def read_output_file(file_name):
-    try:
-        with open(file_name, 'r') as file:
-            lines = file.readlines()
-            file_rows = []
-            for i in range(len(lines)):
-                lineContent = lines[i]
-                if lineContent.strip() == '':
-                    continue
-                else:
-                    file_rows.append(lineContent)
-
-            log('Parser output file read.')
-    except FileNotFoundError:
-        log('No output file found.', 'ERROR')
-        sys.exit()
-    return file_rows
-
-def write_file(data, OUTPUT_FILE, BEGIN_WRITE):
-    with open(OUTPUT_FILE, 'a') as file:
-        if BEGIN_WRITE:
-            file.seek(0)
-            file.truncate()
-        for row in data:
-            file.write(row)
-            file.write('\n')
-        file.write('\n')
-
-def read_input_data(file_path):
+def read_data(file_path):
     '''Returns list of input sentences'''
-
     log(f'File ~ {file_path}')
     try:
         with open(file_path, 'r') as file:
@@ -419,46 +357,64 @@ def read_input_data(file_path):
         log('No such File found.', 'ERROR')
         sys.exit()
     return input_data
-def write_intermediate_input(sentence, file_path):
-    with open(file_path, 'w') as file:
-        file.write(sentence)
-        file.close()
+
+def write_data(data, file_path, BEGIN_WRITE):
+        if isinstance(data[0], list):
+            # Write list of lists
+            with open(file_path, 'a') as file:
+                if BEGIN_WRITE:
+                    file.seek(0)
+                    file.truncate()
+
+                for sublist in data:
+                    line = ' '.join(str(element) for element in sublist)
+                    file.write(line + '\n')
+                file.write('\n')
+            log(f'File ~ {file_path} data written successfully')
+        else:
+            # Write list of strings or a single string
+            if isinstance(data, list):
+                # Write list of strings
+                with open(file_path, 'a') as file:
+                    if BEGIN_WRITE:
+                        file.seek(0)
+                        file.truncate()
+
+                    for item in data:
+                        file.write(str(item) + '\n')
+                    file.write('\n')
+                log(f'File ~ {file_path} data written successfully')
+            else:
+                # Write a single string
+                with open(file_path, "w") as file:
+                    file.write(str(data) + '\n')
+                log(f'File ~ {file_path} data written successfully')
 
 if __name__ == "__main__":
     hindi_format = WXC(order="wx2utf", lang="hin")
-    # get_parser_output(CONSTANTS.INPUT_FILE, CONSTANTS.PARSER_OUTPUT_FILE)
-    # data = read_output_file(CONSTANTS.PARSER_OUTPUT_FILE)
-    # output = parse_file(data)
-    # final_output = []
-    # for inner_list in output:
-    #     #inner_list = [str(ele) for ele in inner_list]
-    #     for i in range(len(inner_list)):
-    #         #convert every wx_conv to utf8
-    #         if i == 1:
-    #             inner_list[i] = hindi_format.convert(inner_list[i])
-    #         inner_list[i] = str(inner_list[i])
-    #     final_output.append('\t'.join(inner_list))
-    # write_file(final_output, CONSTANTS.PROCESSED_PARSER_OUTPUT_FILE)
-
-    input = read_input_data(CONSTANTS.INPUT_FILE)
+    input = read_data(CONSTANTS.INPUT_FILE)
     clean_input = clean_input_data(input)
     BEGIN_WRITE = True
     for sentence in clean_input:
-        write_intermediate_input(sentence, CONSTANTS.INTERMEDIATE_PARSER_INPUT)
+        #generate POS - Tagger output for input sentence
+        write_data(sentence, CONSTANTS.INTERMEDIATE_PARSER_INPUT, BEGIN_WRITE)
         get_parser_output(CONSTANTS.INTERMEDIATE_PARSER_INPUT, CONSTANTS.INTERMEDIATE_PARSER_OUTPUT)
-        data = read_output_file(CONSTANTS.INTERMEDIATE_PARSER_OUTPUT)
-        #write the intetmediate_parser_output in one file
-        write_file(data, CONSTANTS.CONSOLIDATED_PARSER_OUTPUT, BEGIN_WRITE)
+        data = read_data(CONSTANTS.INTERMEDIATE_PARSER_OUTPUT)
 
-        output = parse_file(data)
+        #write the intetmediate_parser_output in one file
+        write_data(data, CONSTANTS.CONSOLIDATED_PARSER_OUTPUT, BEGIN_WRITE)
+        format_output = parse_file(data)
+        #process parser dependencies
+        processed_relation = process_relation(format_output)
+
         final_output = []
-        for inner_list in output:
+        for inner_list in processed_relation:
             for i in range(len(inner_list)):
                 inner_list[i] = str(inner_list[i])
                 if i == 1:
                     inner_list[i] = hindi_format.convert(inner_list[i])
             final_output.append('\t'.join(inner_list))
-        write_file(final_output, CONSTANTS.PROCESSED_PARSER_OUTPUT_FILE, BEGIN_WRITE)
+        write_data(final_output, CONSTANTS.PROCESSED_PARSER_OUTPUT_FILE, BEGIN_WRITE)
         BEGIN_WRITE = False
 
 
