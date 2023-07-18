@@ -17,11 +17,5 @@
 - The isc tagger should be set up in the same project
 - Update the file paths in CONSTANTS.py as per your directory
 
-## Steps of execution -
-- Run this script by executing dependency.py file
-
-## Notes - 
-- script takes some time to run - as for every sentence isc - tagger is called
-
 ## Next version Todos -
 - For input sentences with a connective but, if the prev term of connective is not a VM or VAUX we flag the sentence for manual evaluation

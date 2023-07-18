@@ -109,6 +109,7 @@ def process_relation(output):
         "jjmod__intf": "intf",
         "nmod__k1inv": "rvks",
         "nmod__k2inv": "rbks",
+        "nmod":"mod"
     }
 
     #to fetch necessary rule info in first iteration
@@ -154,12 +155,16 @@ def process_relation(output):
 
     #For CC and 2 VM processing
     if CC_exists and VM_1_exists and VM_2_exists:
-        head_VM, child_VM = fetch_VM_info(output, VM_1_index, VM_2_index)
-        if len(head_VM) and len(child_VM):
-            head_VM_index = head_VM[0]
-            child_VM[6] = head_VM_index
-            up_dep = 'vk2'
-            child_VM[7] = up_dep
+        CC_info = output[CC_index - 1]
+        CC_term = CC_info[1]
+        CC_dep = CC_info[7]
+        if CC_term == 'ki' and (CC_dep == 'k2' or CC_dep == 'rs'):
+            head_VM, child_VM = fetch_VM_info(output, VM_1_index, VM_2_index)
+            if len(head_VM) and len(child_VM):
+                head_VM_index = head_VM[0]
+                child_VM[6] = head_VM_index
+                up_dep = 'vk2'
+                child_VM[7] = up_dep
 
     #Swap k2 and k2g if both point to same head verb
     if k2exists and k2gexists:
@@ -189,7 +194,7 @@ def process_relation(output):
             POS_tag = row[3]
 
             if dep_reln == 'nmod__adj':
-                if POS_tag == 'JJ':
+                if POS_tag == 'JJ' or POS_tag == 'NN':
                     up_dep = 'mod'
                     row[7] = up_dep
                 elif POS_tag == 'QC':
