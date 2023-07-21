@@ -127,6 +127,38 @@ def get_word_index(words, value):
             break
     return index
 
+def get_POS_by_index(parser_output, index):
+    tag = ''
+    try:
+        with open(parser_output, 'r') as file:
+            lines = file.readlines()
+            for i in range(len(lines)):
+                row = lines[i].strip().split()
+                if len(row) == 10 and row[0] == str(index + 1):
+                    tag = row[3]
+                    break
+            return tag
+
+    except FileNotFoundError:
+        log('No such File found.', 'ERROR')
+        sys.exit()
+
+def get_dep_by_index(parser_output, index):
+    dep = ''
+    try:
+        with open(parser_output, 'r') as file:
+            lines = file.readlines()
+            for i in range(len(lines)):
+                row = lines[i].strip().split()
+                if len(row) == 10 and row[0] == str(index+1):
+                    dep = row[7]
+                    break
+            return dep
+
+    except FileNotFoundError:
+        log('No such File found.', 'ERROR')
+        sys.exit()
+
 def breakPairConnective(sentence, manual_evaluation):
     # This function return list of sentences if a paired connective is found else returns an empty list
     simpler_sentences = []
@@ -144,7 +176,7 @@ def breakPairConnective(sentence, manual_evaluation):
                     pair_value = pair_value.strip().split()[0]
                     index_of_pair_value = get_word_index(tokens, pair_value)
                     if not (index_of_pair_value == -1):
-                        get_parser_output(sentence)
+                        get_tagger_output(sentence)
                         if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
                             tokens.pop(i)
                             index_of_pair_value = index_of_pair_value - 1
@@ -160,7 +192,6 @@ def breakPairConnective(sentence, manual_evaluation):
                 break
     return simpler_sentences
 
-
 def breakSimpleConnective(sentence, manual_evaluation):
     # This function return list of sentences if a simple connective is found else returns an empty list
     simpler_sentences = []
@@ -174,17 +205,55 @@ def breakSimpleConnective(sentence, manual_evaluation):
             if following_index == i+1:
                 token = 'नहीं तो'
 
-        # Check if the token is a connective
-        if token in CONSTANTS.SIMPLE_CONNECTIVES:
-            get_parser_output(sentence)
-            if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
-                sent1 = tokens[:i]
-                sent2 = tokens[i:]
-                simpler_sentences.append(" ".join(sent1))
-                simpler_sentences.append(" ".join(sent2))
-                break
-            elif i > 1:
-                manual_evaluation.append(sentence)
+        if token.endswith(','):
+            root_token = token[:-1]
+            get_tagger_output(sentence)
+            if len(root_token) == 0:
+                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                    sent1 = tokens[:i]
+                    # skip comma at ith index
+                    sent2 = tokens[i+1:]
+                    simpler_sentences.append(" ".join(sent1))
+                    simpler_sentences.append(" ".join(sent2))
+                    break
+                elif i > 1:
+                    manual_evaluation.append(sentence)
+            else:
+                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i):
+                    sent1 = tokens[:i+1]
+                    sent2 = tokens[i+1:]
+                    simpler_sentences.append(" ".join(sent1).strip(','))
+                    simpler_sentences.append(" ".join(sent2))
+                    break
+                elif i > 1:
+                    manual_evaluation.append(sentence)
+        else:
+            # Check if the token is a connective
+            if token in CONSTANTS.SIMPLE_CONNECTIVES:
+                if token == 'और':
+                    get_parser_output(sentence)
+                    token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                    token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                    get_tagger_output(sentence)
+                    if token_POS == 'CC' and token_dep == 'main' and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                        sent1 = tokens[:i]
+                        sent2 = tokens[i:]
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
+                    elif i > 1:
+                        manual_evaluation.append(sentence)
+
+                else:
+                    get_tagger_output(sentence)
+                    if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                        sent1 = tokens[:i]
+                        sent2 = tokens[i:]
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
+                    elif i > 1:
+                        manual_evaluation.append(sentence)
 
     return simpler_sentences
 
@@ -194,12 +263,19 @@ def write_input_in_parser_input(file_path, sentence):
         file.write(sentence)
         file.close()
 
-def get_parser_output(sentence):
+def get_tagger_output(sentence):
     parser_input_file = CONSTANTS.PARSER_INPUT
     write_input_in_parser_input(parser_input_file, sentence)
     with open(CONSTANTS.PARSER_OUTPUT, 'w') as file:
         file.truncate()
     os.system("isc-tagger -i p_parser_input.txt -o p_parser_output.txt")
+
+def get_parser_output(sentence):
+    parser_input_file = CONSTANTS.PARSER_INPUT
+    write_input_in_parser_input(parser_input_file, sentence)
+    with open(CONSTANTS.PARSER_OUTPUT, 'w') as file:
+        file.truncate()
+    os.system("isc-parser -i p_parser_input.txt -o p_parser_output.txt")
 
 def breakAllPairedConnective(sentence, allPairedConnectiveList, manual_evaluation):
     simpler_sentences = breakPairConnective(sentence, manual_evaluation)

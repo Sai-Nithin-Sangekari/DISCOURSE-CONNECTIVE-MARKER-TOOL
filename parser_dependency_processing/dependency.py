@@ -96,6 +96,14 @@ def fetch_VM_info(output, VM_1_index, VM_2_index):
 
     return head_VM, child_VM
 
+def fetch_CC_info(output, CC_index):
+# return CC_info other than that on CC_index
+    for row in output:
+        if row[0] != CC_index and row[3] == 'CC':
+            return row
+
+    return []
+
 def process_relation(output):
     dependency_mapper = {
         "r6-k1": "k1",
@@ -123,6 +131,7 @@ def process_relation(output):
     head_verb_exists = False
     VM_1_exists = False
     VM_2_exists = False
+    CC_count = 0
 
     for row in output:
         if len(row) > 0:
@@ -144,6 +153,8 @@ def process_relation(output):
                 k5exists = True
                 k5_index = row[0]
             if row[3] == 'CC':
+                CC_count = CC_count + 1
+            if not CC_exists and row[3] == 'CC':
                 CC_exists = True
                 CC_index = row[0]
             elif row[3] == 'VM' and not VM_1_exists:
@@ -156,15 +167,21 @@ def process_relation(output):
     #For CC and 2 VM processing
     if CC_exists and VM_1_exists and VM_2_exists:
         CC_info = output[CC_index - 1]
-        CC_term = CC_info[1]
-        CC_dep = CC_info[7]
-        if CC_term == 'ki' and (CC_dep == 'k2' or CC_dep == 'rs'):
-            head_VM, child_VM = fetch_VM_info(output, VM_1_index, VM_2_index)
-            if len(head_VM) and len(child_VM):
-                head_VM_index = head_VM[0]
-                child_VM[6] = head_VM_index
-                up_dep = 'vk2'
-                child_VM[7] = up_dep
+        while CC_count and len(CC_info):
+            CC_index = CC_info[0]
+            CC_term = CC_info[1]
+            CC_dep = CC_info[7]
+            if CC_term == 'ki' and (CC_dep == 'k2' or CC_dep == 'rs'):
+                head_VM, child_VM = fetch_VM_info(output, VM_1_index, VM_2_index)
+                if len(head_VM) and len(child_VM):
+                    head_VM_index = head_VM[0]
+                    child_VM[6] = head_VM_index
+                    up_dep = 'vk2'
+                    child_VM[7] = up_dep
+                    break
+            else:
+                CC_count = CC_count - 1
+                CC_info = fetch_CC_info(output, CC_index)
 
     #Swap k2 and k2g if both point to same head verb
     if k2exists and k2gexists:
