@@ -230,7 +230,7 @@ def breakSimpleConnective(sentence, manual_evaluation):
         else:
             # Check if the token is a connective
             if token in CONSTANTS.SIMPLE_CONNECTIVES:
-                if token == 'और':
+                if token == 'और' or token == 'एवं' or token == 'तथा' or token == 'या':
                     get_parser_output(sentence)
                     token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
                     token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
