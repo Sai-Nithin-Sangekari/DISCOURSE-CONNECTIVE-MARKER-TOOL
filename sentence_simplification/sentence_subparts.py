@@ -100,6 +100,10 @@ def write_output(dictionary, file_path, manual_evaluation):
                 if len(value) > 1:
                     letter = string.ascii_lowercase[i]
                 if len(item) > 0 :
+                    # each sub sentence should end in poornaviram
+                    if item.endswith(',') or item.endswith('।'):
+                        item = item[:-1]
+                    item = item.strip() + ' ।'
                     line = line + key + letter + "  " + item + "  " + TAG + "\n"
             file.write(line)
     log("Output file written successfully")

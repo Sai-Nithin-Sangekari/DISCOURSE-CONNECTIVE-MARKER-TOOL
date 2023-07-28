@@ -1,7 +1,6 @@
-तो	CC
+या	CC
 कभी	PRP
-वर्षा	NN
-होती	VM
+ठंडा	JJ
+होता	VM
 है	VAUX
-।	SYM
 
