@@ -1,11 +1,7 @@
-जब	PRP
-आपको	PRP
-ऊनी	JJ
-वस्त्रों	NN
-के	PSP
-बिना	RP
-ठंड	NN
-लगती	VM
+तो	CC
+कभी	PRP
+वर्षा	NN
+होती	VM
 है	VAUX
 ।	SYM
 

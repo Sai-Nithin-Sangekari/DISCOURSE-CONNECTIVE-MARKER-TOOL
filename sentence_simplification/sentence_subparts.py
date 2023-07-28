@@ -119,13 +119,21 @@ def is_prev_word_verb(parser_output, index):
         sys.exit()
     return False
 
-def get_word_index(words, value):
+def get_index_of_word(words, value):
     index = -1
     for i in range(len(words)):
         if words[i] == value:
             index = i
             break
     return index
+
+def get_word_at_index(words, index):
+    word = ""
+    for i in range(len(words)):
+        if i == index:
+            word = words[i]
+            break
+    return word
 
 def get_POS_by_index(parser_output, index):
     tag = ''
@@ -174,7 +182,7 @@ def breakPairConnective(sentence, manual_evaluation):
             for pair_value in pair_value_lst:
                 if pair_value in sentence:
                     pair_value = pair_value.strip().split()[0]
-                    index_of_pair_value = get_word_index(tokens, pair_value)
+                    index_of_pair_value = get_index_of_word(tokens, pair_value)
                     if not (index_of_pair_value == -1):
                         get_tagger_output(sentence)
                         if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
@@ -201,59 +209,36 @@ def breakSimpleConnective(sentence, manual_evaluation):
         token = tokens[i]
         # 'नहीं तो' is simple connective
         if token == 'नहीं':
-            following_index = get_word_index(tokens, 'तो')
-            if following_index == i+1:
+            following_word = get_word_at_index(tokens, i+1)
+            if following_word == 'तो':
                 token = 'नहीं तो'
 
-        if token.endswith(','):
-            root_token = token[:-1]
-            get_tagger_output(sentence)
-            if len(root_token) == 0:
-                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+        # Check if the token is a connective
+        if token in CONSTANTS.SIMPLE_CONNECTIVES:
+            if token == 'और' or token == 'एवं' or token == 'तथा' or token == 'या':
+                get_parser_output(sentence)
+                token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                get_tagger_output(sentence)
+                if token_POS == 'CC' and token_dep == 'main' and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
                     sent1 = tokens[:i]
-                    # skip comma at ith index
-                    sent2 = tokens[i+1:]
+                    sent2 = tokens[i:]
                     simpler_sentences.append(" ".join(sent1))
                     simpler_sentences.append(" ".join(sent2))
                     break
                 elif i > 1:
                     manual_evaluation.append(sentence)
+
             else:
-                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i):
-                    sent1 = tokens[:i+1]
-                    sent2 = tokens[i+1:]
-                    simpler_sentences.append(" ".join(sent1).strip(','))
+                get_tagger_output(sentence)
+                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                    sent1 = tokens[:i]
+                    sent2 = tokens[i:]
+                    simpler_sentences.append(" ".join(sent1))
                     simpler_sentences.append(" ".join(sent2))
                     break
                 elif i > 1:
                     manual_evaluation.append(sentence)
-        else:
-            # Check if the token is a connective
-            if token in CONSTANTS.SIMPLE_CONNECTIVES:
-                if token == 'और' or token == 'एवं' or token == 'तथा' or token == 'या':
-                    get_parser_output(sentence)
-                    token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
-                    token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
-                    get_tagger_output(sentence)
-                    if token_POS == 'CC' and token_dep == 'main' and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
-                        sent1 = tokens[:i]
-                        sent2 = tokens[i:]
-                        simpler_sentences.append(" ".join(sent1))
-                        simpler_sentences.append(" ".join(sent2))
-                        break
-                    elif i > 1:
-                        manual_evaluation.append(sentence)
-
-                else:
-                    get_tagger_output(sentence)
-                    if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
-                        sent1 = tokens[:i]
-                        sent2 = tokens[i:]
-                        simpler_sentences.append(" ".join(sent1))
-                        simpler_sentences.append(" ".join(sent2))
-                        break
-                    elif i > 1:
-                        manual_evaluation.append(sentence)
 
     return simpler_sentences
 

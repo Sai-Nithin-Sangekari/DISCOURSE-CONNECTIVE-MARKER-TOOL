@@ -1,2 +1,2 @@
-Geo_ncert_6stnd_8ch_0008a  इसके विपरीत ऐसे भी दिन होते हैं  None
-Geo_ncert_6stnd_8ch_0008b  जब आपको ऊनी वस्त्रों के बिना ठंड लगती है ।  None
+Geo_ncert_6stnd_8ch_0005a  उदाहरण के लिए मौसम कभी गर्म या कभी ठंडा होता है, कभी-कभी आसमान में बादल छा जाते हैं,  Manual evaluation
+Geo_ncert_6stnd_8ch_0005b  तो कभी वर्षा होती है ।  None
