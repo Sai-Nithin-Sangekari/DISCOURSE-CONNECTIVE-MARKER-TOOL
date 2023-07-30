@@ -35,7 +35,7 @@ Visit https://bitbucket.org/iscnlp/workspace/repositories/ to install the follow
 1. The input file is plain text.
 2. It can contain one or more sentences for simplification.
 3. The input format for each sentence is -
-Sentence_id <any number of spaces> Sentence <followed by newline>
+Sentence_id #any number of spaces# Sentence #followed by newline#
 4. Example input file - 
    - Geo_ncert_6stnd_2ch_0023  इस प्रकार, विषुवत् वृत्त पृथ्वी पर एक काल्पनिक वृत्त बनाती है एवं यह पृथ्वी पर विभिन्न स्थानों की स्थिति बताने का सबसे महत्त्वपूर्ण संदर्भ बिंदु है। 
    - Geo_ncert_6stnd_2ch_0028  इस प्रकार 90 अंश उत्तरी अक्षांश उत्तर ध्रुव को दर्शाता है तथा 90 अंश दक्षिणी अक्षांश दक्षिण ध्रुव को। 
@@ -45,7 +45,7 @@ Sentence_id <any number of spaces> Sentence <followed by newline>
 
 1. The output file is plain text.
 2. The output format for each sentence is -
-3. Sentence_id with letter to show subparts <space>  Sentence  <space> None/ Manual Evaluation
+3. Sentence_id with letter to show subparts #space#  Sentence  #space# None/ Manual Evaluation
    - None tag represents that the sentence is ready to be sent for further processing 
    - Manual Evaluation tag represents that the sentence had a connective but is still not broken. This is to inform the annotators if some manual action needs to be taken.
 4. For each input broken into subparts, letters a, b, c etc. are appended to the sentence_id. If the sentence is not broken then nothing is appended.
