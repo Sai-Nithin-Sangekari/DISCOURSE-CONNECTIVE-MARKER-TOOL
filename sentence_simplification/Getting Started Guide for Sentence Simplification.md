@@ -34,8 +34,22 @@ Visit https://bitbucket.org/iscnlp/workspace/repositories/ to install the follow
 
 1. The input file is plain text.
 2. It can contain one or more sentences for simplification.
-3. The input format for each sentence is -
-Sentence_id #any number of spaces# Sentence #followed by newline#
+3. Input Format:
+
+   **"sentence_id" &nbsp; "sentence"**
+
+   Where:
+   - sentence_id: An identifier for the sentence. It can be an alphanumeric value or a unique numerical identifier.
+   - space or " ": A non-breaking space character that separates the sentence_id from the sentence. One or more spaces are allowed.
+   - sentence: The actual text of the sentence. It can contain letters, numbers, punctuation, and other characters.
+
+   Example:
+   12345&nbsp;पिछले अध्याय में आप पढ़ चुके हैं कि हमारी पृथ्वी गोलाकार नहीं है।.
+   
+   Explanation:
+   In the given input format, '12345' is the sentence_id, and 'This is a sample sentence.' is the sentence.
+   In the above representation, &nbsp; is a non-breaking space, which ensures that the space between sentence_id and sentence is maintained.
+
 4. Example input file - 
    - Geo_ncert_6stnd_2ch_0023  इस प्रकार, विषुवत् वृत्त पृथ्वी पर एक काल्पनिक वृत्त बनाती है एवं यह पृथ्वी पर विभिन्न स्थानों की स्थिति बताने का सबसे महत्त्वपूर्ण संदर्भ बिंदु है। 
    - Geo_ncert_6stnd_2ch_0028  इस प्रकार 90 अंश उत्तरी अक्षांश उत्तर ध्रुव को दर्शाता है तथा 90 अंश दक्षिणी अक्षांश दक्षिण ध्रुव को। 
@@ -44,12 +58,20 @@ Sentence_id #any number of spaces# Sentence #followed by newline#
 ### Output Format:
 
 1. The output file is plain text.
-2. The output format for each sentence is -
-3. Sentence_id with letter to show subparts #space#  Sentence  #space# None/ Manual Evaluation
-   - None tag represents that the sentence is ready to be sent for further processing 
-   - Manual Evaluation tag represents that the sentence had a connective but is still not broken. This is to inform the annotators if some manual action needs to be taken.
+2. Output Format:
+
+   **"Sentence_id with letter to show subparts"&nbsp; "Sentence"&nbsp; "Tag"**
+
+   Where:
+   - Sentence_id with letter to show subparts: An identifier for the sentence with additional letter(s) to indicate subparts, if applicable.
+   - space or " ": A non-breaking space character that separates the sentence_id from the sentence.
+   - Sentence: The actual text of the sentence, which can contain letters, numbers, punctuation, and other characters.
+   - Tag: Indicates if there is any specific evaluation required.
+     - None - represents that the sentence does not require any manual attention.
+     - Manual Evaluation - represents that the sentence had a connective but is still not broken. This is to inform the annotators some manual attention is required.
 4. For each input broken into subparts, letters a, b, c etc. are appended to the sentence_id. If the sentence is not broken then nothing is appended.
-5. Example output file - 
+5. All subparts end with a space and a poornaviram.
+6. Example output file - 
    - Geo_ncert_6stnd_2ch_0023a  इस प्रकार, विषुवत् वृत्त पृथ्वी पर एक काल्पनिक वृत्त बनाती है ।  None 
    - Geo_ncert_6stnd_2ch_0023b  एवं यह पृथ्वी पर विभिन्न स्थानों की स्थिति बताने का सबसे महत्त्वपूर्ण संदर्भ बिंदु है ।  None 
    - Geo_ncert_6stnd_2ch_0028  इस प्रकार 90 अंश उत्तरी अक्षांश उत्तर ध्रुव को दर्शाता है तथा 90 अंश दक्षिणी अक्षांश दक्षिण ध्रुव को ।  Manual evaluation 
@@ -67,15 +89,17 @@ Sentence_id #any number of spaces# Sentence #followed by newline#
 
 ### Major modules in sentence simplification:
 
+Syntax - **module_name(parameter_list):** 
+
 1. validate_sentence(sentence) :
 This function ensures that input sentence is- 
-   - not empty 
+   - not empty
    - not only numeric values
 
 2. sanitize_input(sentence):
 This function ensures that input sentence is-
    - converted to WX convention
-   - then each word is cleaned to remove dZ, jZ, DZ
+   - then each word is cleaned to remove Z from terms having dZ, jZ, DZ. For example - wx conversion of चढ़ी is 'caDZI'. After cleaning it will become 'caDI'. Its corresponding hindi conversion is 'चढी'. This makes it parser compatible.
    - convert each word back to hindi
    - replace full stop if any with a space and a poornaviram at the end of sentence
 
@@ -113,6 +137,10 @@ If  नहीं exists in the sentence, we check if it is followed by तो. I
 2. 'और', 'एवं', 'तथा', 'या':
 If any of the above connectives is found, we call the parser output and check if its POS_tag is CC and its dependency is main.
 If yes then we break the sentence otherwise tag it for manual evaluation.
+3. The conditions to add Manual evaluation tag are-
+   - a connective exists in the sentence
+   - the connective is not the first word of the sentence
+   - due to some unfulfilled condition the sentence could be broken on the connective
 
 ![exception image](images/exceptional_connective_handling.png)
 
