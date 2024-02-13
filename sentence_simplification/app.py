@@ -25,15 +25,15 @@ def process_discourse():
     return jsonify(output_data)
 
 def run_graph_script():
-    graph_script_path = '/home/nithin/USR_Generation/sentence_simplification/graph.py'
+    graph_script_path = 'graph.py'
     dot_command = "dot -Tpng input.dot -o static/output.png"
     subprocess.run(['/usr/bin/python3', graph_script_path], capture_output=True, text=True)
     subprocess.run(dot_command, shell=True)
 
 def run_python_script(input_text):  
-    script_path = '/home/nithin/USR_Generation/sentence_simplification/sentence_subparts.py'
+    script_path = 'sentence_subparts.py'
 
-    with open('/home/nithin/USR_Generation/sentence_simplification/sentence_input.txt', 'w') as result_file:
+    with open('sentence_input.txt', 'w') as result_file:
         result_file.write(input_text)
 
     result = subprocess.run(['/usr/bin/python3', script_path, input_text], capture_output=True, text=True)
@@ -41,17 +41,17 @@ def run_python_script(input_text):
     if result.returncode != 0:
         raise Exception(f"Subprocess failed with error: {result.stderr}")
 
-    with open('/home/nithin/USR_Generation/sentence_simplification/sentence_output.txt', 'r') as result_file:
+    with open('sentence_output.txt', 'r') as result_file:
         result_text = result_file.read()
 
     return result_text
 
 def run_discourse_script(input_text):
-    script_path = '/home/nithin/USR_Generation/sentence_simplification/discourse_Sent.py'
+    script_path = 'discourse_Sent.py'
 
     
 
-    with open('/home/nithin/USR_Generation/sentence_simplification/sentence_output.txt', 'w') as result_file:
+    with open('sentence_output.txt', 'w') as result_file:
         result_file.write(input_text)
 
     result_process = subprocess.run(['/usr/bin/python3', script_path], capture_output=True, text=True)
@@ -59,10 +59,10 @@ def run_discourse_script(input_text):
     if result_process.returncode != 0:
         raise Exception(f"Subprocess failed in discourse with error: {result_process.stderr}")
 
-    with open('/home/nithin/USR_Generation/sentence_simplification/relation.txt', 'r') as result_file:
+    with open('relation.txt', 'r') as result_file:
         relation = result_file.read()
     
-    with open('/home/nithin/USR_Generation/sentence_simplification/sentence_output.txt', 'r') as result_file:
+    with open('sentence_output.txt', 'r') as result_file:
         result_text = result_file.read()
 
     

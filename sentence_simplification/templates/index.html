@@ -50,7 +50,7 @@
         textarea {
             width: calc(100% - 20px);
             height: 100px;
-            font-size: 2em;
+            font-size: 1.7em;
             box-sizing: border-box;
             margin-bottom: 15px;
             border: 1px solid #ccc;
@@ -89,14 +89,6 @@
             margin-top: 20px;
         }
 
-        #discourseButtonContainer {
-            width: 100%;
-            flex: 1;
-            box-sizing: border-box;
-            padding: 20px;
-            font-family: 'Courier New', Courier, monospace; 
-            margin-top: -40px;
-        }
 
         #discourseOutputContainer {
             flex: 1;
@@ -153,6 +145,24 @@
         padding: 10px;
         overflow-y: auto;
     }
+    #discourseButton {
+    font-size: 1.2em;
+    padding: 1em;
+    height: 36%;
+    padding: 20px;
+    width: calc(100% - 85%);
+    background-color: #74da74;
+    color: #000000;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Adjusted margin to move the button slightly higher */
+    outline: none;
+}
+
     </style>
 </head>
 <body>
@@ -173,16 +183,15 @@
         </div>
     </div>
 
-    <!-- <div id="discourseButtonContainer"> -->
         <button type="button" id="discourseButton" onclick="processDiscourse()">Discourse Relation</button>
-    <!-- </div> -->
+    
 
     <div id="discourseOutputContainer">
         <label for="discourseOutput"><font size=5>Discourse Output:</font></label>
         <div id="discourseOutput" class="output-div" contenteditable="true" >
         </div>
     </div>
-    
+    <div id="imageContainer"></div>
     
 
     <script>
@@ -203,7 +212,10 @@
 
         function processDiscourse() {
         var output = document.getElementById("output").value;
+        var discourseOutputDiv = document.getElementById("discourseOutput");
 
+// Clear previous content
+        discourseOutputDiv.innerHTML = '';
         // Make an AJAX request to the server to process the discourse input
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/process_discourse', true);
@@ -284,15 +296,22 @@
                     
                     // discourseOutputDiv.innerText= ''; // Clear previous content
                     // discourseOutputDiv.innerText = highlightedString
-
+                
                     // Create an image tag and append it to the discourseOutputDiv
                 var imageTag = document.createElement("img");
-                imageTag.src = "/static/output.png"; // Change the path accordingly
+                imageTag.src = "/static/output.png?" + Date.now();// Change the path accordingly
                 imageTag.alt = "Description of the image";
                 imageTag.style.maxWidth = "100%";
                 imageTag.style.height = "auto";
                 imageTag.style.marginTop = "20px";
-                document.body.appendChild(imageTag);
+                var imageContainer = document.getElementById("imageContainer");
+
+                // Clear previous content
+                imageContainer.innerHTML = '';
+
+                // Append the image to the image container
+                imageContainer.appendChild(imageTag);
+
                 } else {
                     console.error('Received inputString is not a string:', inputString);
                 }
