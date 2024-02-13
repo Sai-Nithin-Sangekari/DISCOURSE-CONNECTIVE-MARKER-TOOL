@@ -150,15 +150,10 @@ def graph_function(input,final_graph,ones,zeros,graph):
         graph+="\n"+"\""+sentence_before+"\"->\""+input[prev:len(input)]+"\"[label=\""+word_b_z+"\"];"
 
  
-
     final_graph+=pre_graph+graph
     # print("final",final_graph)
-    if(check_relation_present==False):
-        final_graph=""
-        first_relation=""
-        return[final_graph,first_relation,last_relation]
 
-    return [final_graph,first_relation,last_relation]
+    return [final_graph,first_relation,last_relation,check_relation_present]
 
 if __name__=="__main__":
     ones=['समुच्चय', 'कार्य-कारण', 'विरोधि', 'अन्यत्र','समुच्चय दोतक','वाक्य-कर्म','विरोधि.viparIwa','परिणाम','विरोधि_द्योतक','समुच्चय.BI_1','समुच्चय.x' ]
@@ -180,15 +175,17 @@ if __name__=="__main__":
 
     left_bracket=input.find("[")+1
     right_bracket=input.find("]")
-    if left_bracket-1==-1 and right_bracket==-1:
+    if left_bracket-1!=-1 and right_bracket!=-1:
         matches=input[left_bracket:right_bracket]
         brack_relation=matches.strip().split(" ",1)[0]
         brack_text=matches.strip().split(" ",1)[1]
     else:
+        brack_relation=""
         brack_text=input
     final_graph=graph_function(brack_text,final_graph,ones,zeros,graph)[0]
     next_relation=graph_function(brack_text,final_graph,ones,zeros,graph)[1]
-
+    if len(next_relation)==0:
+        next_relation=brack_text
     if left_bracket-1==-1 and right_bracket==-1:
         before_input=input
     else:
@@ -204,15 +201,15 @@ if __name__=="__main__":
         before_input=before_input[0:len(before_input)-1]
     
     # final_graph=graph_function(before_input,final_graph,ones,zeros)[0]
-    if(len(final_graph)>0):
-        brack_text=before_input+" "+brack_relation+" "+next_relation
-        final_graph+=graph_function(before_input,final_graph,ones,zeros,graph)[0]
-        last_relation=graph_function(before_input,final_graph,ones,zeros,graph)[2]
+    final_graph=graph_function(before_input,final_graph,ones,zeros,graph)[0]
+    last_relation=graph_function(before_input,final_graph,ones,zeros,graph)[2]
+    check_relation_present=graph_function(before_input,final_graph,ones,zeros,graph)[3]
+    if check_relation_present:
+        # brack_text=before_input+" "+brack_relation+" "+next_relation
         if left_bracket-1!=-1 and right_bracket!=-1:
             final_graph+="\n\""+last_relation+"\"->\""+next_relation+"\"[label=\""+brack_relation+"\"];"
     else:
-        final_graph="digraph G{ \n node [fontsize=18];\n rankdir=TB;"
-        brack_text=before_input+" "+brack_relation+" "+brack_text
+        brack_text=before_input+" "+brack_relation+" "+next_relation
         final_graph=graph_function(brack_text,final_graph,ones,zeros,graph)[0]
     # print(brack_text)
     
