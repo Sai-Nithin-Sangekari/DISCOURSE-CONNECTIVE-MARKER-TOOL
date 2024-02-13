@@ -93,18 +93,24 @@ def write_output(dictionary, file_path, manual_evaluation):
             letter = ''
             for i in range(len(value)):
                 item = value[i]
-                if item in manual_evaluation:
-                    TAG = 'Manual evaluation'
-                else:
-                    TAG = 'None'
+                # if item in manual_evaluation:
+                #     TAG = 'Manual evaluation'
+                # else:
+                #     TAG = 'None'
+            
                 if len(value) > 1:
                     letter = string.ascii_lowercase[i]
-                if len(item) > 0 :
-                    # each sub sentence should end in poornaviram
+                    
+                if len(item) > 0:
                     if item.endswith(',') or item.endswith('।'):
-                        item = item[:-1]
-                    item = item.strip() + ' ।'
-                    line = line + key + letter + "  " + item + "  " + TAG + "\n"
+                        line += key + letter + "  " + item[:-1] + " ।" + "\n"  # add poornaviram
+                    elif item.endswith('?'):
+                        line += key + letter + "  " + item[:-1] + " ?" + "\n"  # add '?' in the output
+                    elif item.endswith('!'):
+                        line += key + letter + "  " + item[:-1] + " !" + "\n"  # add '!' in the output
+                    else:
+                        line += key + letter + "  " + item + " ।" + "\n"
+            
             file.write(line)
     log("Output file written successfully")
 
@@ -115,7 +121,7 @@ def is_prev_word_verb(parser_output, index):
             for i in range(len(lines)):
                 if i == index:
                     lineContent = lines[i].strip().split()
-                    if len(lineContent) > 0 and (lineContent[1] == 'VM' or lineContent[1] == 'VAUX'):
+                    if len(lineContent) > 0 and (lineContent[3] == 'VM' or lineContent[3] == 'VAUX'):
                         return True
 
     except FileNotFoundError:
@@ -171,14 +177,19 @@ def get_dep_by_index(parser_output, index):
         log('No such File found.', 'ERROR')
         sys.exit()
 
+import CONSTANTS  # Assuming CONSTANTS is the name of your module
+
 def breakPairConnective(sentence, manual_evaluation):
     # This function return list of sentences if a paired connective is found else returns an empty list
     simpler_sentences = []
     BREAK_SENTENCE = False
+
     # Tokenize the sentence by splitting it into words
     tokens = sentence.split()
+    # token = tokens[0]
+
     # Iterate through the tokens to find connectives and split the sentence
-    for i in range(len(tokens)):
+    for i in range(len(tokens)-1):
         token = tokens[i]
         # Check if the token is a paired-connective
         if token in CONSTANTS.COMPLEX_CONNECTIVES:
@@ -188,10 +199,28 @@ def breakPairConnective(sentence, manual_evaluation):
                     pair_value = pair_value.strip().split()[0]
                     index_of_pair_value = get_index_of_word(tokens, pair_value)
                     if not (index_of_pair_value == -1):
-                        get_tagger_output(sentence)
+                        get_parser_output(sentence)
+                        
+                        # Replace "तब" with "तो" if it is present along with "अगर" or "यदि"
+                        if (token == 'अगर' or token == 'यदि') and 'तब' in tokens:
+                            tokens[tokens.index('तब')] = 'तो'
+                            sent1 = tokens[:index_of_pair_value]
+                            sent2 = tokens[index_of_pair_value+i:]
+
+                        # elif (token == 'ना केवल') and 'बल्कि' in tokens:
+                        #     sent1 = tokens[:index_of_pair_value]
+                        #     sent2 = tokens[index_of_pair_value:]
+
                         if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, index_of_pair_value - 1):
-                            tokens.pop(i)
-                            index_of_pair_value = index_of_pair_value - 1
+                            # if token=='ना केवल':
+                            #     index_of_pair_value = index_of_pair_value
+                            #     sent1 = tokens[:index_of_pair_value]
+                            #     sent2 = tokens[index_of_pair_value:]
+                            #     simpler_sentences.append(" ".join(sent1))
+                            #     simpler_sentences.append(" ".join(sent2))
+                            # else:
+                            # tokens.pop(i)
+                            index_of_pair_value = index_of_pair_value
                             sent1 = tokens[:index_of_pair_value]
                             sent2 = tokens[index_of_pair_value:]
                             simpler_sentences.append(" ".join(sent1))
@@ -204,43 +233,111 @@ def breakPairConnective(sentence, manual_evaluation):
                 break
     return simpler_sentences
 
+
 def breakSimpleConnective(sentence, manual_evaluation):
-    # This function return list of sentences if a simple connective is found else returns an empty list
+    # This function returns a list of sentences if a simple connective is found, else returns an empty list
     simpler_sentences = []
     # Tokenize the sentence by splitting it into words
     tokens = sentence.split()
     for i in range(len(tokens)):
         token = tokens[i]
-        # 'नहीं तो' is simple connective
+
+        # 'नहीं तो' is a simple connective
         if token == 'नहीं':
-            following_word = get_word_at_index(tokens, i+1)
+            following_word = get_word_at_index(tokens, i + 1)
             if following_word == 'तो':
                 token = 'नहीं तो'
 
         # Check if the token is a connective
         if token in CONSTANTS.SIMPLE_CONNECTIVES:
-            if token == 'और' or token == 'एवं' or token == 'तथा' or token == 'या':
+            if token in ('और', 'एवं','या'):
                 get_parser_output(sentence)
                 token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
                 token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
-                get_tagger_output(sentence)
+                get_parser_output(sentence)
+
                 if token_POS == 'CC' and token_dep == 'main' and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                    if tokens[0]=='अगर' :
+                        sent1 = tokens[:i]
+                        tokens.insert(i+1,'अगर')
+                        sent2 = tokens[i:]  # Fixed the indexing issue here
+                    else:
+                        sent1 = tokens[:i]
+                        sent2 = tokens[i:]
+
+                    # Check for the condition
+                    if ('इतना'or'इतनी'or'इतने') in sent1 and 'कि' in sent2:
+                        manual_evaluation.append(sentence)
+                    else:
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
+                elif i > 1:
+                    manual_evaluation.append(sentence)
+            elif token == 'कि':
+                get_parser_output(sentence)
+                token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                tags = get_parser_output(sentence)
+
+                if (token_POS == 'CC' and (token_dep == 'k2' or token_dep == 'rs') and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1)):
                     sent1 = tokens[:i]
                     sent2 = tokens[i:]
-                    simpler_sentences.append(" ".join(sent1))
-                    simpler_sentences.append(" ".join(sent2))
-                    break
+
+                    # Check for the condition
+                    if ('इतना'or'इतनी'or'इतने') in sent1:
+                        manual_evaluation.append(sentence)
+                    else:
+                        if 'VM' in tags:
+                            vm_index = tags.index('VM')
+                            if 'यह' not in sent1:  # Check if "यह" is already in the sentence
+                                sent1.insert(vm_index, 'यह')
+                        elif 'VAUX' in tags:
+                            prev_vm_index = get_index_of_word(sent1, 'VAUX')
+                            if 'यह' not in sent1:  # Check if "यह" is already in the sentence
+                                sent1.insert(prev_vm_index, 'यह')
+                        sent1.append('।')  # Add Poornaviram at the end
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
+                elif i > 1:
+                    manual_evaluation.append(sentence)
+            elif token in ('बल्कि','लेकिन','किंतु','परंतु','वरन्'):
+                get_parser_output(sentence)
+                token_POS = get_POS_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
+                if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                    if tokens[0]=='अगर':
+                        sent1 = tokens[:i]
+                        tokens.insert(i+1,'अगर')
+                        sent2 = tokens[i:]  # Fixed the indexing issue here
+                    else:
+                        sent1 = tokens[:i]
+                        sent2 = tokens[i:]
+                    # Check for the condition
+                    if ('इतना'or'इतनी'or'इतने') in sent1 and 'कि' in sent2:
+                        manual_evaluation.append(sentence)
+                    else:
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
                 elif i > 1:
                     manual_evaluation.append(sentence)
 
             else:
-                get_tagger_output(sentence)
+                get_parser_output(sentence)
+                #print(token)
                 if is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
                     sent1 = tokens[:i]
                     sent2 = tokens[i:]
-                    simpler_sentences.append(" ".join(sent1))
-                    simpler_sentences.append(" ".join(sent2))
-                    break
+
+                    # Check for the condition
+                    if ('इतना'or'इतनी'or'इतने') in sent1 and 'कि' in sent2:
+                        manual_evaluation.append(sentence)
+                    else:
+                        simpler_sentences.append(" ".join(sent1))
+                        simpler_sentences.append(" ".join(sent2))
+                        break
                 elif i > 1:
                     manual_evaluation.append(sentence)
 
@@ -251,20 +348,21 @@ def write_input_in_parser_input(file_path, sentence):
         file.truncate()
         file.write(sentence)
         file.close()
-
-def get_tagger_output(sentence):
-    parser_input_file = CONSTANTS.PARSER_INPUT
-    write_input_in_parser_input(parser_input_file, sentence)
-    with open(CONSTANTS.PARSER_OUTPUT, 'w') as file:
-        file.truncate()
-    os.system("isc-tagger -i p_parser_input.txt -o p_parser_output.txt")
-
+    
+    
 def get_parser_output(sentence):
     parser_input_file = CONSTANTS.PARSER_INPUT
     write_input_in_parser_input(parser_input_file, sentence)
     with open(CONSTANTS.PARSER_OUTPUT, 'w') as file:
         file.truncate()
     os.system("isc-parser -i p_parser_input.txt -o p_parser_output.txt")
+    with open(CONSTANTS.PARSER_OUTPUT, 'r') as file:
+        lines = file.readlines()
+        tags = [line.strip().split()[3] for line in lines if line.strip()]
+        # index = [line.strip().split()[0] for line in lines if line.strip()]
+
+
+    return tags
 
 def breakAllPairedConnective(sentence, allPairedConnectiveList, manual_evaluation):
     simpler_sentences = breakPairConnective(sentence, manual_evaluation)
@@ -306,4 +404,3 @@ if __name__ == '__main__':
 
         output_data[key] = allSimpleConnectiveList
     write_output(output_data, CONSTANTS.OUTPUT_FILE, manual_evaluation)
-
