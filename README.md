@@ -4,9 +4,9 @@
 
 -------------------------------------------------------
 
-## Move to sentence_simplification folder
+## Move to linearized_discourse folder
 
-> cd sentence_simplification
+> cd linearized_discourse
 
 --------------------------------------------------------
 
