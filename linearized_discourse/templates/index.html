@@ -82,7 +82,7 @@
 }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #45a049 !important;
         }
 
         #output {
@@ -107,7 +107,7 @@
         #discourseOutput {
             width: calc(100% - 20px);
             height: 100px;
-            font-size: 1.5em;
+            font-size: 1.3em;
             resize: both;
     overflow: auto;
             box-sizing: border-box;
@@ -120,11 +120,14 @@
 
         @media only screen and (max-width: 800px) {
             .textbox-container {
-                max-width: 100%;
+                max-width: 100% ;
             }
+            #discourseOutputContainer {
+                max-width: 100% !important;
+    }
                 button {
-            width: 100%; 
-            margin-top: 20px; /* Adjust the margin for smaller screens */
+            width: 100% !important; 
+            margin-top: 0px; 
         }
         }
         .highlight {
