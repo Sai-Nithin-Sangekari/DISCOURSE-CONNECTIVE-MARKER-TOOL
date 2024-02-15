@@ -247,6 +247,10 @@ def breakSimpleConnective(sentence, manual_evaluation):
             following_word = get_word_at_index(tokens, i + 1)
             if following_word == 'तो':
                 token = 'नहीं तो'
+        if token == 'फिर':
+            following_word = get_word_at_index(tokens, i + 1)
+            if following_word == 'भी':
+                token = 'फिर भी'
 
         # Check if the token is a connective
         if token in CONSTANTS.SIMPLE_CONNECTIVES:
@@ -256,7 +260,7 @@ def breakSimpleConnective(sentence, manual_evaluation):
                 token_dep = get_dep_by_index(CONSTANTS.PARSER_OUTPUT, i)
                 get_parser_output(sentence)
 
-                if token_POS == 'CC' and token_dep == 'main' and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
+                if token_POS == 'CC' and (token_dep == 'main' or token_dep== 'ccof') and is_prev_word_verb(CONSTANTS.PARSER_OUTPUT, i - 1):
                     if tokens[0]=='अगर' :
                         sent1 = tokens[:i]
                         tokens.insert(i+1,'अगर')

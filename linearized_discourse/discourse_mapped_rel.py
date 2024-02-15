@@ -16,12 +16,13 @@ class USR:
            self.convert_to_wx = WXC(order='utf2wx')
            self.res_folder_path = ""
            self.root_folder_path = ""
+           self.na_kevala_found = False
   
    def set_marker_info(self):
        #set of single word markers
            self.markers = {"Ora", "ki","evaM", "waWA", "yaxi", "wo", "kyoMki",
                "isIlie","isalie","jabaki","yaxyapi","waWApi","Pira BI",
-               "lekina","kiMwu","paraMwu","jaba","waba","yA","aWavA", 'viparIwa'}
+               "lekina","kiMwu","paraMwu","jaba","waba","yA","aWavA", 'viparIwa',"hAlAzki"}
           
            #set of multi words marker
            self.multi_word_markers = {"nahIM wo","isake pariNAmasvarUpa", 'isake viparIwa',
@@ -44,6 +45,7 @@ class USR:
                    "jabaki" : "viroXi_xyowaka",
                    "yaxyapi" : "vyABicAra",
                    "waWApi" : "vyABicAra",
+                   "hAlAzki" : "vyABicAra",
                    "Pira BI" : "vyABicAra",
                    "lekina" : "viroXi",
                    "kiMwu" : "viroXi",
@@ -76,7 +78,7 @@ class USR:
                "anyawra": "1",
                "samAnakAla":"0",
                "viroXi": "1",
-               "vyABicAra":"1",
+               "vyABicAra":"0",
                "kArya-kAraNa": "1",
                "AvaSyakawA-pariNAma": "0",
                "samuccaya x" : 'x',
@@ -207,157 +209,160 @@ class USR:
        return "-1"
   
    def process_usr(self,prev_filename, prev_usr, curr_filename, curr_usr):
-           """
-               process USR
-              
-                   -   prev\\_filename : filename of the previous USR file
-                   - prev\\_usr : previous USR list
-                   - curr\\_filename : filename of the current USR file
-                   - curr\\_usr : current USR list
-           """
-
-
-           sentence_without_hash = curr_usr[0][1:] #removing '#' symbol
-           sentence_without_hash = self.convert_to_wx.convert(sentence_without_hash) #converting to wx notation
-          
-           #taking the first 5 words from the beginning
-           #of the sentence and arranges them in a list
-           sentence_without_hash = sentence_without_hash.split(" ")[:5]
-           print(sentence_without_hash)
-           
-           if sentence_without_hash[0] == "nA" and sentence_without_hash[1] == "kevala":
-               self.na_kevala_found = True
-           else:
-               if self.na_kevala_found:
-                   discourse_relation_from_sentence = "samuccaya"
-               # add "samuccaya" to 7th row
-                   usr_id = prev_filename
-                   pos_main_curr_usr = self.get_main_str(curr_usr) #find position of 0:main in current usr list
-                   final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
-               # add "BI_1" to 8th row
-                   curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
-                   curr_usr[7][pos_main_curr_usr] = 'BI_1'
-                   self.na_kevala_found = False
-               
-        
-           discourse_relation_from_sentence = self.get_discourse_from_word(sentence_without_hash)  #gets the discourse relation from the word list
-           if(discourse_relation_from_sentence == "-1"):   #if no discourse relation found, return the USR lists as it is
-               return prev_usr, curr_usr
-           print(sentence_without_hash[0])
-               
-           select_usr_to_append = self.discourse_pos[discourse_relation_from_sentence] #get the USR list where the discourse relation is to be appended.
-                                                                                       #select_usr_to_append == 0  means discourse relation to be added to prev_usr
-                                                                                       #select_usr_to_append == 1  means discourse relation to be added to curr_usr
-
-
-           pos_main_prev_usr = self.get_main_str(prev_usr) #find position of 0:main in previous usr list
-
-           pos_main_curr_usr = self.get_main_str(curr_usr) #find position of 0:main in current usr list
-           print("val: ",sentence_without_hash, discourse_relation_from_sentence, pos_main_curr_usr, pos_main_prev_usr, select_usr_to_append)
-           print(sentence_without_hash[0])
-           if select_usr_to_append == "1" or select_usr_to_append == 'x':
-               """
-                   if the USR to be updated is the current USR list,
-                   d
-                   e.g. :
-                  
-                       merI pehlI gADZI coTI WI  lekina xUsarI gAdZI Limousine ke AkAra kI hE
-                       2a
-                       merI pehlI gADZI coTI WI
-                       speaker,pehlA_1,gADZI_1,CoTI_1,hE_1-pres
-                       1,2,3,4,5
-                       anim,,,,
-                       [m sg m],,[- sg a],,
-                       2:r6,3:ord,5:k1,5:k1s,0:main
-                       ,,,,
-                       ,,,,
-                       ,,,,
-                       affirmative
-
-
-                       2b
-                       lekina xUsarI gAdZI Limousine ke AkAra kI hE
-                       xUsarA_1,gAdZI_1,limousine, AkAra_1, hE_1-pres
-                       1,2,3,4,5
-                       ,,ne,,
-                       [- sg a],[-  sg a],[- sg a],
-                       2:ord,5:k1,5:r6,? 0:main
-                       ,,,,2a.5:viroXI
-                       ,,,,
-                       ,,,,
-                       affirmative
-               """
-               print(" add ", curr_usr[6], pos_main_curr_usr)
-               usr_id = prev_filename 
-               
-               if sentence_without_hash[0] == "isake" and sentence_without_hash[1] == "alAvA":
-                   discourse_relation_from_sentence='samuccaya'
-                   final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
-                   curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
-                   curr_usr[7][pos_main_curr_usr] = 'BI_1'
-                   
-               elif sentence_without_hash[0] == "isake" and sentence_without_hash[1] == "viparIwa":
-                   discourse_relation_from_sentence='viroXi'
-                   final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
-                   curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
-                   curr_usr[7][pos_main_curr_usr] = 'viparIwa'
-                   
-               elif select_usr_to_append == 'x':
-                   curr_usr[7][pos_main_curr_usr]  = 'X'
-            #    print("value_after_hash-->", sentence_without_hash[1])           
-               
-           
-           else:
-               """
-                   if the usr to be updated is previous USR list,
-                   then we need to append the USR ID of the current file
-                  
-                   e.g.:
-                       1a
-                       #Apa cAhawe hEM
-                       addressee,cAha_1-wA_hE_1
-                       1,2
-                       anim,
-                       [m sg u],
-                       2:k1,0:main
-                       ,1b.4:AvaSaykwA-parinAma
-                       ,
-                       affirmative
-                      
-
-
-                       1b
-                       #wo meM Apake Gara AuzgA
-                       speaker,addressee,Gara_1,A_1-gA_1
-                       1,2,3,4
-                       anim,,,
-                       [- sg u],,[- sg a],
-                       4:k1,3:r6,4:k2p,0:main
-                       ,,,
-                       ,respect,,
-                       ,,,
-                       affirmative
-               """
-               
-            #    final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
-            #    prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
-               if sentence_without_hash[0] == "nahIM" and sentence_without_hash[1] == "wo":
-                   print(prev_usr[6], pos_main_prev_usr)
-                   usr_id = curr_filename
-                   final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
-                   prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
-                   prev_usr[7][pos_main_prev_usr] = 'nahIM_1'
-               else:
+        """
+            process USR
             
-                   print(prev_usr[6], pos_main_prev_usr)
-                   usr_id = curr_filename
-                   final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
-                   prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
-               # try:
-               # except IndexError:
-               #   print("error : ", prev_usr[6], pos_main_prev_usr, final_string_to_append)
-                  
-           return prev_usr, curr_usr
+                -	prev\\_filename : filename of the previous USR file
+                - prev\\_usr : previous USR list
+                - curr\\_filename : filename of the current USR file
+                - curr\\_usr : current USR list
+        """
+
+        sentence_without_hash = curr_usr[0][1:]	#removing '#' symbol
+        sentence_without_hash = self.convert_to_wx.convert(sentence_without_hash) #converting to wx notation
+        
+        #taking the first 5 words from the beginning 
+        #of the sentence and arranges them in a list
+        sentence_without_hash = sentence_without_hash.split(" ")[:5]	
+        if sentence_without_hash[0] == "nA" and sentence_without_hash[1] == "kevala":
+               self.na_kevala_found = True
+        else:
+            if self.na_kevala_found:
+                discourse_relation_from_sentence = "samuccaya"
+            # add "samuccaya" to 7th row
+                usr_id = prev_filename
+                pos_main_curr_usr = self.get_main_str(curr_usr) #find position of 0:main in current usr list
+                final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
+            # add "BI_1" to 8th row
+                if prev_usr[6][pos_main_curr_usr]=='':
+                    prev_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
+                curr_usr[7][pos_main_curr_usr] = 'BI_1'
+                self.na_kevala_found = False
+
+        discourse_relation_from_sentence = self.get_discourse_from_word(sentence_without_hash)	#gets the discourse relation from the word list 
+        
+        if(discourse_relation_from_sentence == "-1"):	#if no discourse relation found, return the USR lists as it is
+            return prev_usr, curr_usr
+        
+        select_usr_to_append = self.discourse_pos[discourse_relation_from_sentence]	#get the USR list where the discourse relation is to be appended.
+                                                                                    #select_usr_to_append == 0  means discourse relation to be added to prev_usr
+                                                                                    #select_usr_to_append == 1  means discourse relation to be added to curr_usr
+
+        pos_main_prev_usr = self.get_main_str(prev_usr)	#find position of 0:main in previous usr list
+        pos_main_curr_usr = self.get_main_str(curr_usr)	#find position of 0:main in current usr list
+        print("val: ",sentence_without_hash, discourse_relation_from_sentence, pos_main_curr_usr, pos_main_prev_usr, select_usr_to_append)
+        if select_usr_to_append == "1" or select_usr_to_append == 'x':
+            """
+                if the USR to be updated is the current USR list,
+                d 
+                e.g. :
+                
+                    merI pehlI gADZI coTI WI  lekina xUsarI gAdZI Limousine ke AkAra kI hE
+                    2a
+                    merI pehlI gADZI coTI WI
+                    speaker,pehlA_1,gADZI_1,CoTI_1,hE_1-pres
+                    1,2,3,4,5
+                    anim,,,,
+                    [m sg m],,[- sg a],,
+                    2:r6,3:ord,5:k1,5:k1s,0:main
+                    ,,,,
+                    ,,,,
+                    ,,,,
+                    affirmative
+
+                    2b
+                    lekina xUsarI gAdZI Limousine ke AkAra kI hE
+                    xUsarA_1,gAdZI_1,limousine, AkAra_1, hE_1-pres
+                    1,2,3,4,5
+                    ,,ne,,
+                    [- sg a],[-  sg a],[- sg a],
+                    2:ord,5:k1,5:r6,? 0:main
+                    ,,,,2a.5:viroXI
+                    ,,,,
+                    ,,,,
+                    affirmative
+            """
+            # print(" add ", curr_usr[6], pos_main_curr_usr)
+            # usr_id = prev_filename	
+            # final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
+            # curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
+
+            if sentence_without_hash[0] == "isake" and sentence_without_hash[1] == "alAvA":
+                discourse_relation_from_sentence='samuccaya'
+                final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
+                if curr_usr[6][pos_main_curr_usr]=='':
+                    curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
+                curr_usr[7][pos_main_curr_usr] = 'BI_1'
+                   
+            elif sentence_without_hash[0] == "isake" and sentence_without_hash[1] == "viparIwa":
+                discourse_relation_from_sentence='viroXi'
+                final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
+                if curr_usr[6][pos_main_curr_usr]=='':
+                    curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
+                curr_usr[7][pos_main_curr_usr] = 'viparIwa'
+                
+            else:
+                print(" add ", curr_usr[6], pos_main_curr_usr)
+                print(" add ", prev_usr[6], pos_main_curr_usr)
+                usr_id = prev_filename	
+                final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
+                if curr_usr[6][pos_main_curr_usr]=='':
+                    curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
+                if select_usr_to_append == 'x':
+                    curr_usr[7][pos_main_curr_usr]  = 'X'
+        else:
+            """
+                if the usr to be updated is previous USR list,
+                then we need to append the USR ID of the current file
+                
+                e.g.:
+                    1a
+                    #Apa cAhawe hEM
+                    addressee,cAha_1-wA_hE_1
+                    1,2
+                    anim,
+                    [m sg u],
+                    2:k1,0:main
+                    ,1b.4:AvaSaykwA-parinAma
+                    ,
+                    affirmative
+                    
+
+                    1b
+                    #wo meM Apake Gara AuzgA
+                    speaker,addressee,Gara_1,A_1-gA_1
+                    1,2,3,4
+                    anim,,,
+                    [- sg u],,[- sg a],
+                    4:k1,3:r6,4:k2p,0:main
+                    ,,,
+                    ,respect,,
+                    ,,,
+                    affirmative
+            """
+            # print(prev_usr[6], pos_main_prev_usr)
+            # usr_id = curr_filename
+            # final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
+            # prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
+
+            if sentence_without_hash[0] == "nahIM" and sentence_without_hash[1] == "wo":
+                print(prev_usr[6], pos_main_prev_usr)
+                usr_id = curr_filename
+                final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
+                if prev_usr[6][pos_main_prev_usr]=='':
+                    prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
+                prev_usr[7][pos_main_prev_usr] = 'nahIM_1'
+            else:
+                print(prev_usr[6], pos_main_prev_usr)
+                usr_id = curr_filename
+                final_string_to_append = usr_id + '.' + str(pos_main_curr_usr + 1) + ':' + discourse_relation_from_sentence
+                if prev_usr[6][pos_main_prev_usr]=='':
+                    prev_usr[6][pos_main_prev_usr] += final_string_to_append + ' '
+            # try:
+            # except IndexError:
+            # 	print("error : ", prev_usr[6], pos_main_prev_usr, final_string_to_append)
+                
+        return prev_usr, curr_usr
   
    def run(self):
        """
