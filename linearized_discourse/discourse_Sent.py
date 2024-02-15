@@ -40,6 +40,7 @@ def to_check_same_ids(sent):
     else:
         return None
     
+list1=[]
 def parse_discourse_lines(lines):
     l1 = []
     l2 = []
@@ -183,20 +184,17 @@ def parse_discourse_lines(lines):
             # Normal processing if "अगर" is not present in sent2
             print("4")
             output_line = process_sentences(sent1, sent2, id_1, id_2)
+            print("o",output_line)
+            print("s2",sent2)
+            # output_line = process_sentences(sent1, sent2, id_1, id_2).replace('अगर ', '').replace('यदि ', '')
             if len(lines) > 2:
-                print("jj")
-                for j in range(0, i):
-                    l1.append(lines[j])
-
-                for k in range(i + 2, len(lines)):
-                    l2.append(lines[k])
-
-                for m in range(0, len(l1)):
-                    store.append(l1[m])
-
+                
                 output_line = output_line.strip()
 
                 store.append(output_line)
+
+                for k in range(i + 2, len(lines)):
+                    l2.append(lines[k])
 
                 for n in range(0, len(l2)):
                     store.append(l2[n])
@@ -206,11 +204,10 @@ def parse_discourse_lines(lines):
                         file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                 return process_discourse(file_path)
             else:
+                output_line=output_line.replace('</S_id> ] </S_id>', '</S_id> ]')
                 with open(file_path, 'w') as file:
                     file.write(
-                    output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace(
-                        '</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace(
-                        '</S_id> ] </S_id>', '</S_id> ]').replace('</S_id> ] </S_id>','</S_id> ]').replace('णण् ', '\n'))
+                        output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('णण् ', '\n'))
                 return process_output_line(output_line)
         # i+=1
     i=0
@@ -458,13 +455,20 @@ def process_sentences(sent1, sent2, id_1, id_2):
     hindi_sent2 = convert_to_hindi(results[2]).strip()
     h1 = sent1.split()
     h2 = sent2.split()
-    if 'कि' in h2[1]:
+    print(disc_relation)
+    print(hindi_sent1)
+    print(hindi_sent2)
+    print(id_2)
+
+    if disc_relation=='कि':
         output_line = f"<S_id={id_1}> {hindi_sent1} {hindi_sent2} </S_id>"
+    
     elif h1[0]=='ना' and h1[1]=='केवल' and 'बल्कि' in hindi_sent2:
         disc_relation='समुच्चय'
         hindi_sent1 = hindi_sent1.replace('ना केवल ','')
         hindi_sent2 = hindi_sent2.replace('बल्कि ','')
         output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.BI_1 <S_id={id_2}> {hindi_sent2} </S_id>"
+        
     elif h2[1]=='नहीं' and h2[2]=='तो':
         output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.nahIM_1 <S_id={id_2}> {hindi_sent2} </S_id>"
 
@@ -489,6 +493,7 @@ def process_sentences(sent1, sent2, id_1, id_2):
     else:
         if h2[1]=='इसके' and h2[2]=='विपरीत':
             output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.विपरीत <S_id={id_2}> {hindi_sent2} </S_id>"
+        
         else:
             output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation} <S_id={id_2}> {hindi_sent2} </S_id>"
 
