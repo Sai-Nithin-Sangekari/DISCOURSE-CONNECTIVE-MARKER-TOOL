@@ -20,7 +20,7 @@ class USR:
   
    def set_marker_info(self):
        #set of single word markers
-           self.markers = {"Ora", "ki","evaM", "waWA", "yaxi", "wo", "kyoMki",
+           self.markers = {"Ora","evaM", "waWA", "yaxi", "wo", "kyoMki",
                "isIlie","isalie","jabaki","yaxyapi","waWApi","Pira BI",
                "lekina","kiMwu","paraMwu","jaba","waba","yA","aWavA", 'viparIwa',"hAlAzki"}
           
@@ -32,7 +32,7 @@ class USR:
            #maps all the markers to respective discourse relations
            self.discourse_relation = {
                    "Ora" : "samuccaya",
-                   "ki" : "vAkya-karma",
+                #    "ki" : "vAkya-karma",
                    "evaM" : "samuccaya",
                    "waWA" : "samuccaya",
                 #    "agara" : "AvaSyakawA-pariNAma",
@@ -42,21 +42,21 @@ class USR:
                    "kyoMki" : "kArya-kAraNa",
                    "isIlie" : "pariNAma",
                    "isalie" : "pariNAma",
-                   "jabaki" : "viroXi_xyowaka",
+                   "jabaki" : "viroXI_xyowaka",
                    "yaxyapi" : "vyABicAra",
                    "waWApi" : "vyABicAra",
                    "hAlAzki" : "vyABicAra",
                    "Pira BI" : "vyABicAra",
-                   "lekina" : "viroXi",
-                   "kiMwu" : "viroXi",
-                   "paraMwu" : "viroXi",
+                   "lekina" : "viroXI",
+                   "kiMwu" : "viroXI",
+                   "paraMwu" : "viroXI",
                    "jaba" : "samAnakAla",
                    "waba": "samAnakAla",
                    "yA": "anyawra",
                    "aWavA": "anyawra",
                    'isake pariNAmasvarUpa' : "pariNAma",
-                   'isake viparIwa' : "viroXi",
-                   "viparIwa" : 'viroXi',
+                   'isake viparIwa' : "viroXI",
+                   "viparIwa" : 'viroXI',
                    "isake alAvA" : 'samuccaya x' ,
                    'isake awirikwa' : 'samuccaya x',
                    'isake sAWa-sAWa' : 'samuccaya x',
@@ -75,15 +75,15 @@ class USR:
            #x  means discourse relation to be added to curr_usr and 'x' to be added in the 8th row
            self.discourse_pos = {
                "samuccaya" : "1",
-               "vAkya-karma" : "1",
+            #    "vAkya-karma" : "1",
                "anyawra": "1",
                "samAnakAla":"0",
-               "viroXi": "1",
+               "viroXI": "1",
                "vyABicAra":"0",
                "kArya-kAraNa": "1",
                "AvaSyakawA-pariNAma": "0",
                "samuccaya x" : 'x',
-               "viroXi_xyowaka" : '1',
+               "viroXI_xyowaka" : '1',
                "vavicAra" : 'x',
                "pariNAma" : "1",
            }
@@ -296,7 +296,7 @@ class USR:
                 curr_usr[7][pos_main_curr_usr] = 'BI_1'
                    
             elif sentence_without_hash[0] == "isake" and sentence_without_hash[1] == "viparIwa":
-                discourse_relation_from_sentence='viroXi'
+                discourse_relation_from_sentence='viroXI'
                 final_string_to_append = usr_id + '.' + str(pos_main_prev_usr + 1) + ':' + discourse_relation_from_sentence
                 if curr_usr[6][pos_main_curr_usr]=='':
                     curr_usr[6][pos_main_curr_usr] += final_string_to_append + ' '
