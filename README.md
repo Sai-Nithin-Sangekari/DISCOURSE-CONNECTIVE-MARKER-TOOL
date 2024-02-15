@@ -17,4 +17,6 @@
 --------------------------------------------------------
 
 #### Open the shown port number
+
+## User can also give input through input_web.txt which is present in linearized_discourse folder
 # DISCOURSE-CONNECTIVE-MARKER-TOOL
