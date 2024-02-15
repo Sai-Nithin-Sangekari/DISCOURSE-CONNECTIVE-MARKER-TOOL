@@ -507,6 +507,6 @@ def process_discourse(file_path):
         parse_discourse_lines(lines)
 
 if __name__ == "__main__":
-    file_path='/home/varshith/USR_Generation/sentence_simplification/sentence_output.txt'
+    file_path='sentence_output.txt'
     # wx = WXC(order='wx2utf', lang='hin')
     process_discourse(file_path)
