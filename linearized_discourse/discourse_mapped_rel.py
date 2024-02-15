@@ -26,7 +26,7 @@ class USR:
           
            #set of multi words marker
            self.multi_word_markers = {"nahIM wo","isake pariNAmasvarUpa", 'isake viparIwa',
-                             "isake alAvA", 'isake awirikwa', 'isake sAWa-sAWa','isa kAraNa','isake bAvajZUxa'
+                             "isake alAvA", 'isake awirikwa', 'isake sAWa-sAWa','isake sAWa sAWa','isa kAraNa','isake bAvajZUxa'
                                }
           
            #maps all the markers to respective discourse relations
@@ -60,6 +60,7 @@ class USR:
                    "isake alAvA" : 'samuccaya x' ,
                    'isake awirikwa' : 'samuccaya x',
                    'isake sAWa-sAWa' : 'samuccaya x',
+                   'isake sAWa sAWa' : 'samuccaya x',
                    'isa kAraNa' : 'pariNAma',
                    'isake kAraNa':'kArya-kAraNa',
                    'isake bAvajZUxa' : 'vavicAra',

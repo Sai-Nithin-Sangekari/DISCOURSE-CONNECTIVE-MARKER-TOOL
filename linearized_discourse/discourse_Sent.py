@@ -60,24 +60,21 @@ def parse_discourse_lines(lines):
 
         if id1==id2:
             # Check if "अगर" is present in sent2
-            if ("अगर" in sent1 or "यदि" in sent1) :
-                if "तो" not in sent2 :
-                    # Process sentences until "तो" is encountered
-                    # print("1")
-                    print("a",sent1)
-                    id1 = to_check_same_ids(sent1)
-                    id2 = to_check_same_ids(sent2)
-                    
-                    id_1 = get_ids(sent1)
-                    id_2 = get_ids(sent2)
-                    
-                    if id1 == id2:
-                        output_line = process_sentences(sent1, sent2, id_1, id_2)
-                        # if "अगर" in output_line:
-                        #     output_line=output_line.replace('अगर ', '')
+            if "अगर" in sent1 or "यदि" in sent1 or "यद्यपि" in sent1 :
 
-                        # else:
-                        #     output_line=output_line.replace('यदि ', '')
+                print("a",sent1)
+                print(i)
+                m = i
+                # print("qqq",len(lines))
+                while m < len(lines) - 1 :
+                    print(m)
+                    sent1=lines[m].strip()
+                    sent2=lines[m+1].strip()
+                    print(sent2)
+                
+                    if "तो" not in sent2 or "फिर" not in sent2 or "हालाँकि" not in sent2 or "तथापि" not in sent2:
+                        output_line=process_sentences(sent1, sent2, id_1, id_2)
+                        
                         print("v",output_line)
                         if i == 0:
                             output_line = output_line.strip()
@@ -92,7 +89,7 @@ def parse_discourse_lines(lines):
 
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace("यद्यपि ",'') + '\n')
                             return process_discourse(file_path)
                         else:
                             for j in range(0, i):
@@ -110,20 +107,24 @@ def parse_discourse_lines(lines):
 
                             for n in range(0, len(l2)):
                                 store.append(l2[n])
-
+                            m += 1
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace("यद्यपि ",'') + '\n')
                             return process_discourse(file_path)
-                        
-                            # l1.append(output_line)
-                elif "तो" in sent2:
-                    return if_to(file_path)
+                            
+                                # l1.append(output_line)
+                else:
+                    break
+                    
+                        # l1.append(output_line)
+            elif "तो" in sent2 or "फिर" in sent2 or "हालाँकि" in sent2 or "तथापि" in sent2:
+                return if_to(file_path)
                 
-            elif ("अगर" in sent2 or "यदि" in sent2) :
+            elif "अगर" in sent2 or "यदि" in sent2 or "यद्यपि" in sent2 :
                 # Process sentences until "तो" is encountered
                 sent3 = lines[i + 2].strip() if i + 2 < len(lines) else None
-                if "तो" not in sent3:
+                if "तो" not in sent3 or "फिर" not in sent3 or "हालाँकि" not in sent3 or "तथापि" not in sent3:
                     print("2")
                     id1 = to_check_same_ids(sent2)
                     id2 = to_check_same_ids(sent3)
@@ -132,7 +133,7 @@ def parse_discourse_lines(lines):
                     id_2 = get_ids(sent3)
                     
                     if id1 == id2:
-                        output_line = process_sentences(sent2, sent3, id_1, id_2)
+                        output_line = process_sentences(sent2, sent3, id_1, id_2).replace('अगर ', '').replace('यदि ', '')
                         # if "अगर" in output_line:
                         #     output_line=output_line.replace('अगर ', '')
                         # else:
@@ -151,10 +152,10 @@ def parse_discourse_lines(lines):
 
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                             return process_discourse(file_path)
                         else:
-                            for j in range(0, i):
+                            for j in range(0, i+1):
                                 l1.append(lines[j])
 
                             for k in range(i + 3, len(lines)):
@@ -164,7 +165,6 @@ def parse_discourse_lines(lines):
                                 store.append(l1[m])
 
                             output_line= output_line.strip()
-
                             store.append(output_line)
 
                             for n in range(0, len(l2)):
@@ -172,48 +172,49 @@ def parse_discourse_lines(lines):
 
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                             return process_discourse(file_path)
                         
-                elif "तो" in sent3:
+                elif "तो" in sent3 or "फिर" in sent3 or "हालाँकि" in sent3 or "तथापि" in sent3:
+                    print("nn")
                     return if_to(file_path)
                 
-            elif "तो" in lines[i+1]:
+            elif "तो" in lines[i+1] or "फिर" in lines[i+1] or "हालाँकि" in lines[i+1] or "तथापि" in lines[i+1]:
                 return if_to(file_path)
             
                 # continue
             # Normal processing if "अगर" is not present in sent2
             print("4")
-            # output_line = process_sentences(sent1, sent2, id_1, id_2)
-            # if len(lines) > 2:
-            #     print("jj")
-            #     for j in range(0, i):
-            #         l1.append(lines[j])
+            output_line = process_sentences(sent1, sent2, id_1, id_2)
+            if len(lines) > 2:
+                print("jj")
+                for j in range(0, i):
+                    l1.append(lines[j])
 
-            #     for k in range(i + 2, len(lines)):
-            #         l2.append(lines[k])
+                for k in range(i + 2, len(lines)):
+                    l2.append(lines[k])
 
-            #     for m in range(0, len(l1)):
-            #         store.append(l1[m])
+                for m in range(0, len(l1)):
+                    store.append(l1[m])
 
-            #     output_line = output_line.strip()
+                output_line = output_line.strip()
 
-            #     store.append(output_line)
+                store.append(output_line)
 
-            #     for n in range(0, len(l2)):
-            #         store.append(l2[n])
+                for n in range(0, len(l2)):
+                    store.append(l2[n])
 
-            #     with open(file_path, 'w') as file:
-            #         for n in range(len(store)):
-            #             file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
-            #     return process_discourse(file_path)
-            # else:
-            #     with open(file_path, 'w') as file:
-            #         file.write(
-            #         output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace(
-            #             '</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace(
-            #             '</S_id> ] </S_id>', '</S_id> ]').replace('</S_id> ] </S_id>','</S_id> ]').replace('अगर ', '').replace('यदि ', '').replace('णण् ', '\n'))
-            #     return process_output_line(output_line)
+                with open(file_path, 'w') as file:
+                    for n in range(len(store)):
+                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
+                return process_discourse(file_path)
+            else:
+                with open(file_path, 'w') as file:
+                    file.write(
+                    output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace(
+                        '</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace(
+                        '</S_id> ] </S_id>', '</S_id> ]').replace('</S_id> ] </S_id>','</S_id> ]').replace('णण् ', '\n'))
+                return process_output_line(output_line)
         # i+=1
     i=0
     while i<len(lines)-1:
@@ -228,21 +229,17 @@ def parse_discourse_lines(lines):
         id_2 = get_ids(sent2)
 
         # Check if "अगर" is present in sent2
-        if "अगर" in sent2:
+        if "अगर" in sent2 or "यदि" in sent2 or "यद्यपि" in sent2 :
             # Process with the next sentence
             sent3 = lines[i + 2].strip() if i + 2 < len(lines) else None
             output_line_next = process_sentences(sent2, sent3, id_2, get_ids(sent3)) if sent3 else None
             
             # Process with the current sentence and the next one
             output_line_current = process_sentences(sent1, output_line_next , id_1, get_ids(output_line_next)) if output_line_next else None
-            if "अगर" in output_line_current:
-                output_line_current=output_line_current.replace('अगर ', '')
-            else:
-                output_line_current=output_line_current.replace('यदि ', '')
 
             if i == 0:
                 store.append(lines[0])
-                output_line_current = output_line_current.strip()
+                output_line_current = output_line_current.replace('अगर ', '').replace('यदि ', '').replace("यद्यपि ",'')
                 store.append(output_line_current)
 
                 for k in range(i + 3, len(lines)):
@@ -253,7 +250,7 @@ def parse_discourse_lines(lines):
 
                 with open(file_path, 'w') as file:
                     for n in range(len(store)):
-                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                 return process_discourse(file_path)
             else:
                 for j in range(0, i):
@@ -265,7 +262,7 @@ def parse_discourse_lines(lines):
                 for m in range(0, len(l1)):
                     store.append(l1[m])
 
-                output_line_current = output_line_current.strip()
+                output_line_current = output_line_current.strip().replace('अगर ', '').replace('यदि ', '')
 
                 store.append(output_line_current)
 
@@ -274,11 +271,11 @@ def parse_discourse_lines(lines):
                 i+=1
                 with open(file_path, 'w') as file:
                     for n in range(len(store)):
-                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                 return process_discourse(file_path)
 
     # Normal processing if "अगर" is not present in sent2
-        output_line = process_sentences(sent1, sent2, id_1, id_2)
+        output_line = process_sentences(sent1, sent2, id_1, id_2).replace('अगर ', '').replace('यदि ', '')
         if len(lines) > 2:
             
             output_line = output_line.strip()
@@ -293,13 +290,13 @@ def parse_discourse_lines(lines):
 
             with open(file_path, 'w') as file:
                 for n in range(len(store)):
-                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
             return process_discourse(file_path)
         else:
             output_line=output_line.replace('</S_id> ] </S_id>', '</S_id> ]')
             with open(file_path, 'w') as file:
                 file.write(
-                    output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '').replace('णण् ', '\n'))
+                    output_line.replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('णण् ', '\n'))
             return process_output_line(output_line)
         
 def if_to(file_path):
@@ -312,7 +309,7 @@ def if_to(file_path):
     for i in range(len(lines)):
         
         sent3 = lines[i].strip()
-        if "तो" in sent3:
+        if "तो" in sent3 or "फिर" in sent3 or "हालाँकि" in sent3 or "तथापि" in sent3:
             print("Processing sentence with 'तो' at line:", i)
             b = i + 1
             while b < len(lines):
@@ -321,7 +318,7 @@ def if_to(file_path):
                     print("Processing sentences following 'तो' until IDs match at line:", b)
                     output_line_current = process_sentences(sent3, sent4,get_ids(sent3),get_ids(sent4))
                     if i == 0:
-                        output_line_current = output_line_current.strip()
+                        output_line_current = output_line_current.strip().replace('अगर ', '').replace('यदि ', '')
                         store.append(output_line_current)
                         for k in range(b + 1, len(lines)):
                             l2.append(lines[k])
@@ -329,7 +326,7 @@ def if_to(file_path):
                             store.append(l2[n])
                         with open(file_path, 'w') as file:
                             for n in range(len(store)):
-                                file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]') + '\n')
                         return process_discourse(file_path)
                     else:
                         for j in range(0, i):
@@ -338,20 +335,20 @@ def if_to(file_path):
                             l2.append(lines[k])
                         for m in range(len(l1)):
                             store.append(l1[m])
-                        output_line_current = output_line_current.strip()
+                        output_line_current = output_line_current.strip().replace('अगर ', '').replace('यदि ', '')
                         store.append(output_line_current)
                         for n in range(len(l2)):
                             store.append(l2[n])
                         b += 1
                         with open(file_path, 'w') as file:
                             for n in range(len(store)):
-                                file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]') + '\n')
                         return process_discourse(file_path)
                 else:
                     a = i - 1
                     print("Processing sentences preceding 'तो' until IDs match at line:", a)
                     while a >= 0:
-                        print("kk")
+                        print("pk")
                         print(lines[a])
                         sent1 = lines[a].strip()
                         sent2 = lines[a + 1].strip()
@@ -360,11 +357,11 @@ def if_to(file_path):
                         id_1 = get_ids(sent1)
                         id_2 = get_ids(sent2)
                         if id1 == id2:
-                            output_line = process_sentences(sent1, sent2, id_1, id_2)
-                            if "अगर" in output_line:
-                                output_line = output_line.replace('अगर ', '')
-                            else:
-                                output_line = output_line.replace('यदि ', '')
+                            output_line = process_sentences(sent1, sent2, id_1, id_2).replace('अगर ', '').replace('यदि ', '')
+                            # if "अगर" in output_line:
+                            #     output_line = output_line.replace('अगर ', '')
+                            # else:
+                            #     output_line = output_line.replace('यदि ', '')
                             if i == 0:
                                 store.append(lines[0])
                                 output_line = output_line.strip()
@@ -375,7 +372,7 @@ def if_to(file_path):
                                     store.append(l2[n])
                                 with open(file_path, 'w') as file:
                                     for n in range(len(store)):
-                                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]') + '\n')
                                 return process_discourse(file_path)
                             else:
                                 for j in range(0, a):
@@ -391,7 +388,7 @@ def if_to(file_path):
                                 a -= 1
                                 with open(file_path, 'w') as file:
                                     for n in range(len(store)):
-                                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                        file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]') + '\n')
                                 return process_discourse(file_path)
                         else:
                             break
@@ -409,11 +406,8 @@ def if_to(file_path):
                     id_1 = get_ids(sent1)
                     id_2 = get_ids(sent2)
                     if id1 == id2:
-                        output_line = process_sentences(sent1, sent2, id_1, id_2)
-                        if "अगर" in output_line:
-                            output_line = output_line.replace('अगर ', '')
-                        else:
-                            output_line = output_line.replace('यदि ', '')
+                        output_line = process_sentences(sent1, sent2, id_1, id_2).replace('अगर ', '').replace('यदि ', '')
+                        
                         if i == 0:
                             store.append(lines[0])
                             output_line = output_line.strip()
@@ -424,7 +418,7 @@ def if_to(file_path):
                                 store.append(l2[n])
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]') + '\n')
                             return process_discourse(file_path)
                         else:
                             for j in range(0, a):
@@ -440,7 +434,7 @@ def if_to(file_path):
                             a -= 1
                             with open(file_path, 'w') as file:
                                 for n in range(len(store)):
-                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]').replace('अगर ', '').replace('यदि ', '') + '\n')
+                                    file.write(store[n].replace('\n', '').replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>', '</S_id> ]') + '\n')
                             return process_discourse(file_path)
                     else:
                         break        
@@ -449,7 +443,7 @@ def if_to(file_path):
         
 def process_output_line(output_line):
     
-    modified_lines = [output_line.replace('णण् ', '\n')]
+    modified_lines = [output_line.replace('</S_id> </S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id> </S_id>', '</S_id>').replace('</S_id> </S_id>', '</S_id>').replace('</S_id> ] </S_id>','</S_id> ]').replace('णण् ', '\n')]
     
     with open(file_path, 'w', encoding='utf-8') as output_file:
         output_file.writelines(modified_lines)
@@ -485,6 +479,10 @@ def process_sentences(sent1, sent2, id_1, id_2):
             h2 = disc_relation.split()
             disc_relation = h2[0]
             output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.BI_1 <S_id={id_2}> {hindi_sent2} </S_id>"
+        elif h2[1]=='इसके' and (h2[2]=='साथ-साथ' or h2[2]=='साथ' and h2[3]=='साथ'):
+            h2 = disc_relation.split()
+            disc_relation = h2[0]
+            output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.Inclusive <S_id={id_2}> {hindi_sent2} </S_id>"
         elif results[1] == "samuccaya x":
             h2 = disc_relation.split()
             disc_relation = h2[0]
@@ -512,6 +510,6 @@ def process_discourse(file_path):
         parse_discourse_lines(lines)
 
 if __name__ == "__main__":
-    file_path='sentence_output.txt'
+    file_path='/home/varshith/USR_Generation/sentence_simplification/sentence_output.txt'
     # wx = WXC(order='wx2utf', lang='hin')
     process_discourse(file_path)
