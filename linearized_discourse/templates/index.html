@@ -192,7 +192,7 @@
         <label for="inputText"><font size=5>Input Sentence:</font></label>
         <textarea id="inputText" name="inputText"></textarea>
         <form id="inputForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="fileInput">
+            <input type="file" id="fileInput" name="fileInput" onchange="handleFileInputChange()">
         </form>
     </div>
     <button type="button" id="processButton" onclick="processInput()">Simplify</button>
@@ -204,12 +204,12 @@
         document.getElementById('loading-spinner').appendChild(spinner.el);
     </script>
     <div class="textbox-container">
-        <label for="output"><font size=5>Simplified Sentence:</font></label>
+        <label for="output"><font size=5>Simplified:</font></label>
         <textarea id="output"></textarea>
     </div>
 </div>
 
-<button type="button" id="discourseButton" onclick="processDiscourse()">Discourse Relation</button>
+<button type="button" id="discourseButton" onclick="processDiscourse()">Discourse Marker</button>
 
 
 <div id="discourseOutputContainer">
@@ -224,43 +224,37 @@
     window.onload = function () {
         document.getElementById('fileInput').value = '';
     };
+    function handleFileInputChange() {
+        var fileInput = document.getElementById("fileInput");
+        var inputText = document.getElementById("inputText");
 
-    function processInput() {
-    var inputText;
-    var fileInput = document.getElementById("fileInput");
-    document.getElementById('loading-spinner').style.display = 'block';
-    
-    if (fileInput.files && fileInput.files[0]) {
-        // If a file is selected, read its content
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            inputText = e.target.result;
-            sendInputToServer(inputText);
-        };
-        reader.readAsText(fileInput.files[0]);
-    } else {
-        // If no file is selected, use the text from the textarea
-        inputText = document.getElementById("inputText").value;
-        sendInputToServer(inputText);
-    }
-}
-
-function sendInputToServer(inputText) {
-    document.getElementById('loading-spinner').style.display = 'block';
-
-    // Make an AJAX request to the server to process the input
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/process_input', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            document.getElementById("output").value = xhr.responseText;
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // Populate the textarea with the content of the uploaded file
+                inputText.value = e.target.result;
+            };
+            reader.readAsText(fileInput.files[0]);
         }
-        // Hide the spinner after receiving the response
-        document.getElementById('loading-spinner').style.display = 'none';
-    };
-    xhr.send('inputText=' + encodeURIComponent(inputText));
+    }
+    function processInput() {
+        var inputText = document.getElementById("inputText").value;
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        // Make an AJAX request to the server to process the input
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/process_input', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                document.getElementById("output").value = xhr.responseText;
+            }
+            // Hide the spinner after receiving the response
+            document.getElementById('loading-spinner').style.display = 'none';
+        };
+        xhr.send('inputText=' + encodeURIComponent(inputText));
 }
+
 
     function processDiscourse() {
         var output = document.getElementById("output").value;

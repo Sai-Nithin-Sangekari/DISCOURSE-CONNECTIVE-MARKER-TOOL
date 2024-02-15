@@ -9,11 +9,7 @@ def index():
 
 @app.route('/process_input', methods=['POST'])
 def process_input():
-    if 'fileInput' in request.files:
-        uploaded_file = request.files['fileInput']
-        input_text = uploaded_file.read().decode('utf-8')
-    else:
-        input_text = request.form['inputText']
+    input_text = request.form['inputText']
     
     output_text = run_python_script(input_text)
     return output_text
