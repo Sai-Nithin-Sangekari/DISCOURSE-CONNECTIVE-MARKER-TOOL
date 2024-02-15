@@ -8,218 +8,247 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #688897;
-    padding: 20px;
-}
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #688897;
+            padding: 20px;
+        }
 
-h1 {
-    margin-bottom: 20px;
-    margin-top: -15px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: bold;
-    color: #bcdda0;
-}
+        h1 {
+            margin-bottom: 20px;
+            margin-top: -15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            color: #bcdda0;
+        }
 
-#container {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
+        #container {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-.textbox-container {
-    flex: 1;
-    box-sizing: border-box;
-    max-width: 48%;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 0.5%;
-    font-family: 'Courier New', Courier, monospace;
-    color: #020e44;
-    margin-bottom: 5px;
-}
+        .textbox-container {
+            flex: 1;
+            box-sizing: border-box;
+            max-width: 48%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 0.5%;
+            font-family: 'Courier New', Courier, monospace;
+            color: #020e44;
+            margin-bottom: 5px;
+        }
 
-textarea {
-    width: 100%;
-    height: 100px;
-    font-size: 1.5em;
-    box-sizing: border-box;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-}
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 1.5em;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+        }
 
-label {
-    display: block;
-    margin-bottom: 10px;
-}
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
 
-button {
-    font-size: 1.2em;
-    padding: 1em;
-    height: 36%;
-    padding: 12px;
-    width: calc(100% - 90%);
-    background-color: #74da74;
-    color: #000000;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 80px;
-    outline: none;
-}
+        button {
+            font-size: 1.2em;
+            padding: 1em;
+            height: 36%;
+            padding: 12px;
+            width: calc(100% - 90%);
+            background-color: #74da74;
+            color: #000000;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 80px;
+            outline: none;
+        }
 
-button:hover {
-    background-color: #45a049 !important;
-}
+        button:hover {
+            background-color: #45a049 !important;
+        }
 
-#output {
-    margin-top: 20px;
-}
+        #output {
+            margin-top: 20px;
+        }
 
-#discourseOutputContainer {
-    flex: 1;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 68%;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    color: #020e44;
-    margin-top: 10px;
-}
+        #discourseOutputContainer {
+            flex: 1;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 68%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #020e44;
+            margin-top: 10px;
+        }
 
-#discourseOutput {
-    width: calc(100% - 20px);
-    height: 100px;
-    font-size: 1.1em;
-    resize: both;
-    overflow: auto;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-}
+        #discourseOutput {
+            width: calc(100% - 20px);
+            height: 100px;
+            font-size: 1.1em;
+            resize: both;
+            overflow: auto;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+        }
 
-#loading-spinner {
-    display: none;
-    position: absolute;
-    top: calc(50% + 60px);
-    left: 50%;
-    transform: translateX(-50%);
-}
+        #loading-spinner {
+            display: none;
+            position: absolute;
+            top: calc(50% + 60px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-@media only screen and (max-width: 920px) {
-    #loading-spinner {
-        display: none !important;
-    }
-    .textbox-container {
-        max-width: 100%;
-    }
-    #discourseOutputContainer {
-        max-width: 100% !important;
-    }
-    button {
-        width: 100% !important;
-        margin-top: 0px;
-    }
-}
+        @media only screen and (max-width: 920px) {
+            #loading-spinner {
+                display: none !important;
+            }
 
-.highlight {
-    background-color: rgb(255, 255, 0);
-}
+            .textbox-container {
+                max-width: 100%;
+            }
 
-.highlightg {
-    background-color: rgb(210, 210, 205);
-}
+            #discourseOutputContainer {
+                max-width: 100% !important;
+            }
 
-.output-div {
-    width: calc(100% - 20px);
-    height: 100px;
-    font-size: 2em;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    overflow-y: auto;
-}
+            button {
+                width: 100% !important;
+                margin-top: 0px;
+            }
+        }
 
-#discourseButton {
-    font-size: 1.2em;
-    padding: 1em;
-    height: 36%;
-    padding: 10px;
-    width: calc(100% - 80%);
-    background-color: #74da74;
-    color: #000000;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 20px;
-    outline: none;
-}
+        .highlight {
+            background-color: rgb(255, 255, 0);
+        }
 
+        .highlightg {
+            background-color: rgb(210, 210, 205);
+        }
+
+        .output-div {
+            width: calc(100% - 20px);
+            height: 100px;
+            font-size: 2em;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #discourseButton {
+            font-size: 1.2em;
+            padding: 1em;
+            height: 36%;
+            padding: 10px;
+            width: calc(100% - 80%);
+            background-color: #74da74;
+            color: #000000;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            outline: none;
+        }
     </style>
 </head>
 <body>
 
-    <h1>DISCOURSE CONNECTIVE MARKER TOOL</h1>
+<h1>DISCOURSE CONNECTIVE MARKER TOOL</h1>
 
-    <div id="container">
-        <div class="textbox-container">
-            <label for="inputText"><font size=5>Input Sentence:</font></label>
-            <textarea id="inputText" name="inputText">{% for sentence in input_sentences %}{{ sentence.strip() }}{% if not loop.last %}\n{% endif %}{% endfor %}</textarea>
-        </div>
-        <button type="button" id="processButton" onclick="processInput()">Simplify</button>
-        <div id="loading-spinner"></div>
-        <script>
-            // Create a new Spinner instance
-            var spinner = new Spinner().spin();
-            // Append the spinner to the container
-            document.getElementById('loading-spinner').appendChild(spinner.el);
-        </script>
-        <div class="textbox-container">
-            <label for="output"><font size=5>Simplified Sentence:</font></label>
-            <textarea id="output" ></textarea>
-        </div>
+<div id="container">
+    <div class="textbox-container">
+        <label for="inputText"><font size=5>Input Sentence:</font></label>
+        <textarea id="inputText" name="inputText"></textarea>
+        <label for="fileInput"><font size=5>(or) Upload Text File:</font></label>
+        <form id="inputForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="fileInput">
+        </form>
     </div>
-
-        <button type="button" id="discourseButton" onclick="processDiscourse()">Discourse Relation</button>
-    
-
-    <div id="discourseOutputContainer">
-        <label for="discourseOutput"><font size=5>Discourse Output:</font></label>
-        <div id="discourseOutput" class="output-div" contenteditable="true" >
-        </div>
-    </div>
-    <div id="imageContainer"></div>
-    
-
+    <button type="button" id="processButton" onclick="processInput()">Simplify</button>
+    <div id="loading-spinner"></div>
     <script>
-        function processInput() {
-    var inputText = document.getElementById("inputText").value;
+        // Create a new Spinner instance
+        var spinner = new Spinner().spin();
+        // Append the spinner to the container
+        document.getElementById('loading-spinner').appendChild(spinner.el);
+    </script>
+    <div class="textbox-container">
+        <label for="output"><font size=5>Simplified Sentence:</font></label>
+        <textarea id="output"></textarea>
+    </div>
+</div>
+
+<button type="button" id="discourseButton" onclick="processDiscourse()">Discourse Relation</button>
+
+
+<div id="discourseOutputContainer">
+    <label for="discourseOutput"><font size=5>Discourse Output:</font></label>
+    <div id="discourseOutput" class="output-div" contenteditable="true"></div>
+</div>
+<div id="imageContainer"></div>
+
+
+<script>
+    // Reset file input on page load
+    window.onload = function () {
+        document.getElementById('fileInput').value = '';
+    };
+
+    function processInput() {
+    var inputText;
+    var fileInput = document.getElementById("fileInput");
+    document.getElementById('loading-spinner').style.display = 'block';
+    
+    if (fileInput.files && fileInput.files[0]) {
+        // If a file is selected, read its content
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            inputText = e.target.result;
+            sendInputToServer(inputText);
+        };
+        reader.readAsText(fileInput.files[0]);
+    } else {
+        // If no file is selected, use the text from the textarea
+        inputText = document.getElementById("inputText").value;
+        sendInputToServer(inputText);
+    }
+}
+
+function sendInputToServer(inputText) {
     document.getElementById('loading-spinner').style.display = 'block';
 
     // Make an AJAX request to the server to process the input
@@ -236,12 +265,11 @@ button:hover {
     xhr.send('inputText=' + encodeURIComponent(inputText));
 }
 
-
-        function processDiscourse() {
+    function processDiscourse() {
         var output = document.getElementById("output").value;
         var discourseOutputDiv = document.getElementById("discourseOutput");
 
-// Clear previous content
+        // Clear previous content
         discourseOutputDiv.innerHTML = '';
         // Make an AJAX request to the server to process the discourse input
         var xhr = new XMLHttpRequest();
@@ -259,57 +287,43 @@ button:hover {
                     function highlightSearchWords(inputString, searchWords) {
 
                         let sentList = inputString.split(" ");
-                        let b=false
-                        let g=false
+                        let b = false
+                        let g = false
 
                         for (let word of sentList) {
 
-                            if (searchWords.includes(word)) 
-                            {
+                            if (searchWords.includes(word)) {
                                 // g=false
-                                if(word=="आवश्यकता-परिणाम")
-                                {
-                                    g=true
+                                if (word == "आवश्यकता-परिणाम" || word=="व्याभिचार") {
+                                    g = true
                                 }
                                 var contentToAppend = document.createElement("p");
-                                contentToAppend.innerHTML= '<span class="highlight">' + word + '</span>';
-                                b=true
-                                contentToAppend.style.display="inline"
+                                contentToAppend.innerHTML = '<span class="highlight">' + word + '</span>';
+                                b = true
+                                contentToAppend.style.display = "inline"
                                 discourseOutputDiv.appendChild(contentToAppend);
-                            } 
-                            else 
-                            {
-                                if(word.trim()=="]")
-                                {
-                                    g=false
+                            } else {
+                                if (word.trim() == "]") {
+                                    g = false
                                 }
                                 var contentToAppend = document.createElement("p");
-                                if(b)
-                                {
-                                    word=" "+word+" "
+                                if (b) {
+                                    word = " " + word + " "
+                                } else {
+                                    word += " "
                                 }
-                                else
-                                {
-                                    word+=" "
-                                }
-                                if(g)
-                                {
+                                if (g) {
                                     const pattern = /<([^>]+)>/g;
                                     const isPresent = word.match(pattern);
-                                    if(isPresent)
-                                    {
-                                        contentToAppend.innerText=word;
+                                    if (isPresent) {
+                                        contentToAppend.innerText = word;
+                                    } else {
+                                        contentToAppend.innerHTML = '<span class="highlightg">' + word + '</span>';
                                     }
-                                    else
-                                    {
-                                    contentToAppend.innerHTML= '<span class="highlightg">' + word + '</span>';
-                                    }
+                                } else {
+                                    contentToAppend.innerText = word;
                                 }
-                                else
-                                {
-                                    contentToAppend.innerText= word;
-                                }
-                                contentToAppend.style.display="inline"
+                                contentToAppend.style.display = "inline"
                                 discourseOutputDiv.appendChild(contentToAppend);
                             }
                         }
@@ -320,24 +334,24 @@ button:hover {
                     var discourseOutputDiv = document.getElementById("discourseOutput");
                     // Highlight the search words in the input string
                     var highlightedString = highlightSearchWords(inputString, searchWords);
-                    
+
                     // discourseOutputDiv.innerText= ''; // Clear previous content
                     // discourseOutputDiv.innerText = highlightedString
-                
+
                     // Create an image tag and append it to the discourseOutputDiv
-                var imageTag = document.createElement("img");
-                imageTag.src = "/static/output.png?" + Date.now();// Change the path accordingly
-                imageTag.alt = "Description of the image";
-                imageTag.style.maxWidth = "100%";
-                imageTag.style.height = "auto";
-                imageTag.style.marginTop = "20px";
-                var imageContainer = document.getElementById("imageContainer");
+                    var imageTag = document.createElement("img");
+                    imageTag.src = "/static/output.png?" + Date.now(); // Change the path accordingly
+                    imageTag.alt = "Description of the image";
+                    imageTag.style.maxWidth = "100%";
+                    imageTag.style.height = "auto";
+                    imageTag.style.marginTop = "20px";
+                    var imageContainer = document.getElementById("imageContainer");
 
-                // Clear previous content
-                imageContainer.innerHTML = '';
+                    // Clear previous content
+                    imageContainer.innerHTML = '';
 
-                // Append the image to the image container
-                // imageContainer.appendChild(imageTag);
+                    // Append the image to the image container
+                    // imageContainer.appendChild(imageTag);
 
                 } else {
                     console.error('Received inputString is not a string:', inputString);
@@ -347,9 +361,7 @@ button:hover {
 
         xhr.send('output=' + encodeURIComponent(output));
     }
-
-
-    </script>
+</script>
 
 </body>
 </html>
