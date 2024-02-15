@@ -52,9 +52,10 @@
 
         textarea {
             width: 100%;
-            height: 100px;
+            height: 150px;
             font-size: 1.5em;
             box-sizing: border-box;
+            margin-top: 1px;
             margin-bottom: 5px;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -88,15 +89,12 @@
             background-color: #45a049 !important;
         }
 
-        #output {
-            margin-top: 20px;
-        }
 
         #discourseOutputContainer {
             flex: 1;
             box-sizing: border-box;
             width: 100%;
-            max-width: 68%;
+            max-width: 70%;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -193,7 +191,6 @@
     <div class="textbox-container">
         <label for="inputText"><font size=5>Input Sentence:</font></label>
         <textarea id="inputText" name="inputText"></textarea>
-        <label for="fileInput"><font size=5>(or) Upload Text File:</font></label>
         <form id="inputForm" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="fileInput">
         </form>
