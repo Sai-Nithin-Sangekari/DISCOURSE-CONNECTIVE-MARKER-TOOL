@@ -156,7 +156,7 @@ def graph_function(input,final_graph,ones,zeros,graph):
     return [final_graph,first_relation,last_relation,check_relation_present]
 
 if __name__=="__main__":
-    ones=['समुच्चय', 'कार्य-कारण', 'विरोधि', 'अन्यत्र','समुच्चय दोतक','वाक्य-कर्म','विरोधि.viparIwa','परिणाम','विरोधि_द्योतक','समुच्चय.BI_1','समुच्चय.x' ]
+    ones=['समुच्चय', 'कार्य-कारण', 'विरोधि', 'अन्यत्र','समुच्चय दोतक','वाक्य-कर्म','विरोधि.viparIwa','समुच्चय.Inclusive','परिणाम','विरोधि_द्योतक','समुच्चय.BI_1','समुच्चय.x' ]
     zeros=['आवश्यकता-परिणाम', 'व्याभिचार','समानकाल']
     final_graph="digraph G{ \n node [fontsize=18];\n rankdir=TB;"
     with open("sentence_output.txt","r") as file:
