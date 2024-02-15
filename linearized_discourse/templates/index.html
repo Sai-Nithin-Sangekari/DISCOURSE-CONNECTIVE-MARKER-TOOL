@@ -44,7 +44,7 @@ h1 {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 0.5%;
     font-family: 'Courier New', Courier, monospace;
     color: #020e44;
     margin-bottom: 5px;
@@ -53,7 +53,7 @@ h1 {
 textarea {
     width: 100%;
     height: 100px;
-    font-size: 1.7em;
+    font-size: 1.5em;
     box-sizing: border-box;
     margin-bottom: 5px;
     border: 1px solid #ccc;
@@ -109,7 +109,7 @@ button:hover {
 #discourseOutput {
     width: calc(100% - 20px);
     height: 100px;
-    font-size: 1.3em;
+    font-size: 1.1em;
     resize: both;
     overflow: auto;
     box-sizing: border-box;
@@ -189,10 +189,8 @@ button:hover {
 
     <div id="container">
         <div class="textbox-container">
-            <form id="inputForm">
-                <label for="inputText"><font size=5>Input Sentence:</font></label>
-                <textarea id="inputText" name="inputText"></textarea>
-            </form>
+            <label for="inputText"><font size=5>Input Sentence:</font></label>
+            <textarea id="inputText" name="inputText">{% for sentence in input_sentences %}{{ sentence.strip() }}{% if not loop.last %}\n{% endif %}{% endfor %}</textarea>
         </div>
         <button type="button" id="processButton" onclick="processInput()">Simplify</button>
         <div id="loading-spinner"></div>
@@ -339,7 +337,7 @@ button:hover {
                 imageContainer.innerHTML = '';
 
                 // Append the image to the image container
-                imageContainer.appendChild(imageTag);
+                // imageContainer.appendChild(imageTag);
 
                 } else {
                     console.error('Received inputString is not a string:', inputString);
