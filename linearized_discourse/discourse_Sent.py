@@ -508,7 +508,6 @@ def process_sentences(sent1, sent2, id_1, id_2):
 
     if h2[1]=='कि':
         output_line = f"<S_id={id_1}> {hindi_sent1} {hindi_sent2} </S_id>"
-        
     
     elif h1[0]=='ना' and h1[1]=='केवल' and 'बल्कि' in hindi_sent2:
         disc_relation='समुच्चय'
@@ -530,7 +529,7 @@ def process_sentences(sent1, sent2, id_1, id_2):
         elif h2[1]=='इसके' and (h2[2]=='साथ-साथ' or h2[2]=='साथ' and h2[3]=='साथ'):
             h2 = disc_relation.split()
             disc_relation = h2[0]
-            output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.Inclusive <S_id={id_2}> {hindi_sent2} </S_id>"
+            output_line = f"<S_id={id_1}> {hindi_sent1} </S_id> {disc_relation}.समावेशी <S_id={id_2}> {hindi_sent2} </S_id>"
         elif results[1] == "samuccaya x":
             h2 = disc_relation.split()
             disc_relation = h2[0]
